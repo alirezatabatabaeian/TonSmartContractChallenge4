@@ -20,19 +20,19 @@
 (tuple) fibonacci_sequence (int n, int k) method_id {
   tuple final_answer = empty_tuple();
 
-  int before_before = 0;
+  int before_before = -1;
   int before = 1;
 
   ;; if (n == 1) {
   ;;   before_before = 1;
   ;;   before = 0;
   ;; }
-  if (n == 0) {
-    before_before = -1;
-    before = 1;
-  }
+  ;; if (n == 0) {
+  ;;   before_before = -1;
+  ;;   before = 1;
+  ;; }
   
-  repeat(n - 2) {
+  repeat(n) {
     int current = before + before_before;
     before_before = before;
     before = current;
