@@ -23,19 +23,22 @@
   int before_before = -1;
   int before = 1;
   
-  repeat(n) {
-    ;; int current = before + before_before;
-    ;; before_before = before;
-    ;; before = current;
-    (before_before, before) = (before, before + before_before);
-  }
+  ;; repeat(n) {
+  ;;   (before_before, before) = (before, before + before_before);
+  ;; }
 
-  repeat(k) {
-    ;; int current = before + before_before;
-    ;; before_before = before;
-    ;; before = current;
+  ;; repeat(k) {
+  ;;   (before_before, before) = (before, before + before_before);
+  ;;   final_answer~tpush(before);
+  ;; }
+
+  int index = 1;
+  repeat(n + k) {
     (before_before, before) = (before, before + before_before);
-    final_answer~tpush(before);
+    if(index > n) {
+      final_answer~tpush(before);
+    }
+    index += 1;
   }
 
   return final_answer;
