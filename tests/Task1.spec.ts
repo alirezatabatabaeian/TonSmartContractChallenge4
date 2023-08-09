@@ -34,6 +34,6 @@ describe('Task1', () => {
     });
 
     it('check', async () => {
-        console.log(await task1.getcheck());
+        // console.log(await task1.getcheck());
     });
 });
