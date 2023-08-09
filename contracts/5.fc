@@ -23,14 +23,14 @@
   int before_before = 0;
   int before = 1;
 
-  if (n == 1) {
-    before_before = 1;
-    before = 0;
-  }
-  ;; if (n == 0) {
-  ;;   before_before = -1;
-  ;;   before = 1;
+  ;; if (n == 1) {
+  ;;   before_before = 1;
+  ;;   before = 0;
   ;; }
+  if (n == 0) {
+    before_before = -1;
+    before = 1;
+  }
   
   repeat(n - 2) {
     int current = before + before_before;
