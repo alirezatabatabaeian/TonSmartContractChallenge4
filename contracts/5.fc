@@ -17,7 +17,26 @@
 }
 
 ;; testable
-(tuple) fibonacci_sequence (int n) method_id {
-  return null();
+(tuple) fibonacci_sequence (int n, int k) method_id {
+  tuple final_answer = empty_tuple();
+
+  int before_before = 0;
+  int before = 1;
+  
+  repeat(n - 2) {
+    int current = before + before_before;
+    before_before = before;
+    before = current;
+  }
+
+  repeat(k) {
+    int current = before + before_before;
+    before_before = before;
+    before = current;
+    final_answer~tpush(current);
+  }
+
+
+  return final_answer;
 }
 
