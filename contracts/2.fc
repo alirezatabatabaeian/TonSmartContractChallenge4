@@ -9,7 +9,7 @@
   After  calculating the result matrix, the function should return final result (as tuple).
 -}
 
-(int) tlen (tuple t) asm "TLEN";
+(int) tlen(tuple t) asm "TLEN";
 
 () recv_internal() {
 }
