@@ -31,8 +31,13 @@ export class Task1 implements Contract {
         return await provider.get(name, args);
     }
     
-    async getacheck(provider: ContractProvider) {
-        const result = await provider.get('check', []);
+    // async get_find_branch_by_hash(provider: ContractProvider) {
+    //     const result = await provider.get('find_branch_by_hash', []);
+    //     return result.stack.readNumber();
+    // }
+
+    async get_cell_hash(provider: ContractProvider) {
+        const result = await provider.get('get_cell_hash', []);
         return result.stack.readNumber();
     }
 }

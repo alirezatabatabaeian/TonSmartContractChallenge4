@@ -33,7 +33,11 @@ describe('Task1', () => {
         });
     });
 
-    it('check', async () => {
-        // console.log(await task1.getcheck());
+    it('test1', async () => {
+        // console.log(await task1.get_find_branch_by_hash());
+    });
+
+    it('get hash', async () => {
+        // console.log("Cell Hash is:", await task1.get_cell_hash())
     });
 });

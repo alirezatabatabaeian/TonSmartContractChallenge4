@@ -2,7 +2,7 @@
   TASK 1 - Find branch of the cell tree
   Write the method that will find a branch of the tree by comparing its
   hash with the hash received in the first parameter. When the algorithm finds
-  the subtree (branch) whose  hash equals the received hash, the root cell of
+  the subtree (branch) whose hash equals the received hash, the root cell of
   this branch should be returned. Return empty cell if the branch is not found.
 -}
 
@@ -28,3 +28,14 @@
 
   return begin_cell().end_cell();
 }
+
+;; int get_cell_hash() method_id {
+;;   cell tree = begin_cell()
+;;             .store_uint(10, 32)
+;;             .end_cell();
+
+;;   ;; int hash = 62824192032946770000000000000000000000000000000000000000000000000000000000000;
+;;   ;; int hash = 1000101011100101001110111000101100000001011110000001100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+
+;;   return hash == tree.cell_hash();
+;; }
