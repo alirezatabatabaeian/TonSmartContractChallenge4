@@ -23,7 +23,9 @@ int gas_consumed() asm "GASCONSUMED";
 
   int before_before = -1;
   int before = 1;
-  ~dump(gas_consumed());
+
+  ;; int g = gas_consumed();
+  ;; g~dump();
   
   ;; repeat(n) {
   ;;   (before_before, before) = (before, before + before_before);
@@ -43,8 +45,9 @@ int gas_consumed() asm "GASCONSUMED";
     index += 1;
   }
 
-  ~dump(gas_consumed());
+  ;; int g = gas_consumed();
+  ;; g~dump();
+
   return final_answer;
-  ~dump(gas_consumed());
 }
 
