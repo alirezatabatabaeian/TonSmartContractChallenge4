@@ -22,29 +22,21 @@
 
   int before_before = -1;
   int before = 1;
-
-  ;; if (n == 1) {
-  ;;   before_before = 1;
-  ;;   before = 0;
-  ;; }
-  ;; if (n == 0) {
-  ;;   before_before = -1;
-  ;;   before = 1;
-  ;; }
   
   repeat(n) {
-    int current = before + before_before;
-    before_before = before;
-    before = current;
+    ;; int current = before + before_before;
+    ;; before_before = before;
+    ;; before = current;
+    (before_before, before) = (before, before + before_before);
   }
 
   repeat(k) {
-    int current = before + before_before;
-    before_before = before;
-    before = current;
-    final_answer~tpush(current);
+    ;; int current = before + before_before;
+    ;; before_before = before;
+    ;; before = current;
+    (before_before, before) = (before, before + before_before);
+    final_answer~tpush(before);
   }
-
 
   return final_answer;
 }
