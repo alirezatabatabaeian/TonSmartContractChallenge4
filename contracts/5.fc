@@ -12,7 +12,6 @@
   1188518561323126046432205871807859915657177,
   1923063428480944139667114773918309212080528]
 -}
-int gas_consumed() asm "GASCONSUMED";
 
 () recv_internal() {
 }
@@ -24,29 +23,14 @@ int gas_consumed() asm "GASCONSUMED";
   int before_before = -1;
   int before = 1;
 
-  ;; int g = gas_consumed();
-  ;; g~dump();
-  
-  ;; repeat(n) {
-  ;;   (before_before, before) = (before, before + before_before);
-  ;; }
-
-  ;; repeat(k) {
-  ;;   (before_before, before) = (before, before + before_before);
-  ;;   final_answer~tpush(before);
-  ;; }
-
-  int index = 1;
-  repeat(n + k) {
+  repeat(n) {
     (before_before, before) = (before, before + before_before);
-    if(index > n) {
-      final_answer~tpush(before);
-    }
-    index += 1;
   }
 
-  ;; int g = gas_consumed();
-  ;; g~dump();
+  repeat(k) {
+    (before_before, before) = (before, before + before_before);
+    final_answer~tpush(before);
+  }
 
   return final_answer;
 }
