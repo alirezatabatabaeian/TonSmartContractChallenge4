@@ -31,7 +31,7 @@ export class Task1 implements Contract {
         return await provider.get(name, args);
     }
     
-    async getcheck(provider: ContractProvider) {
+    async getacheck(provider: ContractProvider) {
         const result = await provider.get('check', []);
         return result.stack.readNumber();
     }
