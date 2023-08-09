@@ -1,8 +1,10 @@
-import { Blockchain, SandboxContract } from '@ton-community/sandbox';
+import { Blockchain, SandboxContract, TreasuryContract } from '@ton-community/sandbox';
 import { Cell, toNano } from 'ton-core';
 import { Task1 } from '../wrappers/Task1';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
+
+let deployer: SandboxContract<TreasuryContract>
 
 describe('Task1', () => {
     let code: Cell;
@@ -31,8 +33,7 @@ describe('Task1', () => {
         });
     });
 
-    it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and task1 are ready to use
+    it('check', async () => {
+        console.log(await task1.getcheck());
     });
 });

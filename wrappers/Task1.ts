@@ -7,7 +7,7 @@ export function task1ConfigToCell(config: Task1Config): Cell {
 }
 
 export class Task1 implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Task1(address);
@@ -25,5 +25,14 @@ export class Task1 implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get(provider: ContractProvider, name: string, args: any[]) {
+        return await provider.get(name, args);
+    }
+    
+    async getcheck(provider: ContractProvider) {
+        const result = await provider.get('check', []);
+        return result.stack.readNumber();
     }
 }
