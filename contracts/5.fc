@@ -18,10 +18,19 @@
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
-  ;; tuple final_answer = empty_tuple();
+  tuple final_answer = empty_tuple();
 
   ;; int before_before = 0;
   ;; int before = 1;
+
+  ;; if (n == 1) {
+  ;;   before_before = 1;
+  ;;   before = 0;
+  ;; }
+  ;; if (n == 0) {
+  ;;   before_before = -1;
+  ;;   before = 1;
+  ;; }
   
   ;; repeat(n - 2) {
   ;;   int current = before + before_before;
@@ -37,9 +46,6 @@
   ;; }
 
 
-  ;; return final_answer;
-  return to_tuple([1, 2, 3]);
-
-  ;; return empty_tuple();
+  return final_answer;
 }
 
