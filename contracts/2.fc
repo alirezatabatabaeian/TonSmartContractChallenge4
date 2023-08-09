@@ -7,7 +7,7 @@
   up to 32x32.
   Matrix can be rectangular where matrixA must to be of size n*m & matrixB of size m*p.
   After calculating the result matrix, the function should return final result (as tuple).
--} 
+-}  
 
 (int) tlen (tuple t) asm "TLEN";
 
