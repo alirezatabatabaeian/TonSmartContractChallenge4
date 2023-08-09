@@ -29,8 +29,9 @@
     repeat(p) {      
       int sum = 0;
       int k = 0;
+      tuple temp = matrixA.at(i);
       repeat(m) {
-        sum += matrixA.at(i).at(k) * matrixB.at(k).at(j);
+        sum += temp.at(k) * matrixB.at(k).at(j);
         k += 1;
       }
       middle_result~tpush(sum);
