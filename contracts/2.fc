@@ -16,31 +16,33 @@
 
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id {
-  int n = matrixA.tlen();
-  int m = matrixB.tlen();
-  int p = matrixB.at(0).tlen();
+  ;; int n = matrixA.tlen();
+  ;; int m = matrixB.tlen();
+  ;; int p = matrixB.at(0).tlen();
 
-  tuple final_result = empty_tuple();
+  ;; tuple final_result = empty_tuple();
 
-  int i = 0;
-  repeat(n) {
-    tuple middle_result = empty_tuple();
-    int j = 0;
-    repeat(p) {      
-      int sum = 0;
-      int k = 0;
-      ;; tuple temp = matrixA.at(i); اینو میشه ی لوپ عقب تر هم تعریف کرد
-      repeat(m) {
-        sum += matrixA.at(i).at(k) * matrixB.at(k).at(j);
-        k += 1;
-      }
-      middle_result~tpush(sum);
-      j += 1;
-    }
-    final_result~tpush(middle_result);
-    i += 1;
-  }
+  ;; int i = 0;
+  ;; repeat(n) {
+  ;;   tuple middle_result = empty_tuple();
+  ;;   int j = 0;
+  ;;   repeat(p) {      
+  ;;     int sum = 0;
+  ;;     int k = 0;
+  ;;     ;; tuple temp = matrixA.at(i); اینو میشه ی لوپ عقب تر هم تعریف کرد
+  ;;     repeat(m) {
+  ;;       sum += matrixA.at(i).at(k) * matrixB.at(k).at(j);
+  ;;       k += 1;
+  ;;     }
+  ;;     middle_result~tpush(sum);
+  ;;     j += 1;
+  ;;   }
+  ;;   final_result~tpush(middle_result);
+  ;;   i += 1;
+  ;; }
 
-  return final_result;
+  ;; return final_result;
+
+  return empty_tuple();
 }
 
