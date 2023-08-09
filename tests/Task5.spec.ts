@@ -32,7 +32,8 @@ describe('Task5', () => {
     });
 
     it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and task5 are ready to use
+        let n = 5;
+        let k = 1;
+        console.log("Fibonacci Sequence from", n, "to", n + k - 1, "are", await task5.get_fibonacci_sequence(n, k))
     });
 });
