@@ -59,7 +59,8 @@ int is_between?(int min, int middle, int max) {
 
   t_result~tpush(stex~make_each_ref(shift));
 
-  while(~ stex.slice_refs_empty?()) {
+  ;; while(~ stex.slice_refs_empty?()) {
+  repeat(1) {
     stex = stex.preload_ref().begin_parse();
     t_result~tpush(stex~make_each_ref(shift));
   }
