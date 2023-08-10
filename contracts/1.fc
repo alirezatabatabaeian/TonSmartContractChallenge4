@@ -11,20 +11,20 @@
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
-  ;; slice str = tree.begin_parse();
+  slice str = tree.begin_parse();
   
-  ;; while(~ str.slice_refs_empty?()) {
-  ;;   cell ref = str~load_ref();
-  ;;   if (ref.cell_hash() == hash) {
-  ;;     return tree;
-  ;;   }
-  ;;   else {
-  ;;     cell maybe_answer = find_branch_by_hash(hash, ref);
-  ;;     ifnot (maybe_answer.begin_parse().slice_empty?()) {
-  ;;       return maybe_answer;
-  ;;     }  
-  ;;   }
-  ;; }
+  while(~ str.slice_refs_empty?()) {
+    cell ref = str~load_ref();
+    if (ref.cell_hash() == hash) {
+      return tree;
+    }
+    else {
+      cell maybe_answer = find_branch_by_hash(hash, ref);
+      ifnot (maybe_answer.begin_parse().slice_empty?()) {
+        return maybe_answer;
+      }  
+    }
+  }
 
   return begin_cell().end_cell();
 }
