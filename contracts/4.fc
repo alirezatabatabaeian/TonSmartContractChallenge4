@@ -9,18 +9,49 @@
 () recv_internal() {
 }
 
+int is_between?(int min, int middle, int max) {
+    return (min <= middle) & (middle <= max);
+}
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
-  return begin_cell().end_cell();
+  slice stex = text.begin_parse();
+  stex~skip_bits(32);
+
+  shift = shift % 26;
+
+  builder result = begin_cell();
+
+  while(~ stex.slice_empty?()) {
+    int char = stex~load_uint(8);
+
+    if(is_between?(65, char, 90)) {
+      if(is_between?(65, char + shift, 90)) {
+        result~store_uint(char + shift, 8);
+      }
+      else {
+        result~store_uint(char + shift - 26, 8);
+      }
+    }
+    else {
+      if(is_between?(97, char, 122)) {
+        if(is_between?(97, char + shift, 122)) {
+          result~store_uint(char + shift, 8);
+        }
+        else {
+          result~store_uint(char + shift - 26, 8);
+        }
+      }
+      else {
+        result~store_uint(char, 8);
+      }
+    }
+  }
+
+  return result.end_cell();
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
-  return begin_cell().end_cell();
-}
-
-int get_ascii(cell char) method_id {
-  slice s = char.begin_parse();
-
-  return s.preload_uint(1);
+  return caesar_cipher_encrypt(26 - shift, text);
 }

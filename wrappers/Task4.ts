@@ -29,8 +29,32 @@ export class Task4 implements Contract {
 
     async get_ascii(provider: ContractProvider, char: string) {
         const result = await provider.get('get_ascii', [
-            { type: 'cell', cell: beginCell().storeBuffer(new Buffer(char)).endCell()},]);
+            { type: 'cell', cell: beginCell().storeBuffer(new Buffer(char)).endCell() },]);
 
         return result.stack.readNumber();
     }
+
+    async get_char(provider: ContractProvider, char: number) {
+        const result = await provider.get('get_char', [
+            { type: 'int', value: BigInt(char) },]);
+
+        return result.stack.readString();
+    }
+
+    async get_caesar_cipher_encrypt(provider: ContractProvider, shift: number, text: string) {
+        const result = await provider.get('caesar_cipher_encrypt', [
+            { type: 'int', value: BigInt(shift) },
+            { type: 'cell', cell: beginCell().storeUint(0, 32).storeBuffer(new Buffer(text)).endCell() }]);
+
+        return result.stack.readString();
+    }
+
+    async get_caesar_cipher_decrypt(provider: ContractProvider, shift: number, text: string) {
+        const result = await provider.get('caesar_cipher_decrypt', [
+            { type: 'int', value: BigInt(shift) },
+            { type: 'cell', cell: beginCell().storeUint(0, 32).storeBuffer(new Buffer(text)).endCell() }]);
+
+        return result.stack.readString();
+    }
+
 }
