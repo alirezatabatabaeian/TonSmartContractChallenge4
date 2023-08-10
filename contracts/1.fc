@@ -13,9 +13,9 @@
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
   slice str = tree.begin_parse();
   
-  ;; if(tree.cell_hash() == hash) { ;; one test case
-  ;;   return tree; 
-  ;; }
+  if(tree.cell_hash() == hash) { ;; one test case 
+    return tree; 
+  }
 
   ;; while(~ str.slice_refs_empty?()) {
   ;;   cell ref = str~load_ref();
@@ -30,7 +30,7 @@
   ;;   }
   ;; }
 
-  return begin_cell().end_cell();
+  return begin_cell().end_cell(); ;; 5 tests
 }
 
 ;; int get_cell_hash() method_id {
