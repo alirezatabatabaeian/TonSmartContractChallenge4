@@ -9,45 +9,74 @@
 () recv_internal() {
 }
 
+(int) tlen(tuple t) asm "TLEN";
+(builder, ()) store_ref_new(builder b, cell c) asm(c b) "STREF";
+
 int is_between?(int min, int middle, int max) {
   return (min <= middle) & (middle <= max);
 }
 
-;; testable
-(cell) caesar_cipher_encrypt(int shift, cell text) method_id {
-  slice stex = text.begin_parse();
+(slice, builder) make_each_ref(slice stex, int shift) {
+  builder middle_result = begin_cell();
 
-  shift = shift % 26;
-
-  builder result = begin_cell();
-
-  while(~ stex.slice_empty?()) {
+  while(~ stex.slice_data_empty?()) {
     int char = stex~load_uint(8);
 
     if(is_between?(65, char, 90)) {
       if(is_between?(65, char + shift, 90)) {
-        result~store_uint(char + shift, 8);
+        middle_result~store_uint(char + shift, 8);
       }
       else {
-        result~store_uint(char + shift - 26, 8);
+        middle_result~store_uint(char + shift - 26, 8);
       }
     }
     else {
       if(is_between?(97, char, 122)) {
         if(is_between?(97, char + shift, 122)) {
-          result~store_uint(char + shift, 8);
+          middle_result~store_uint(char + shift, 8);
         }
         else {
-          result~store_uint(char + shift - 26, 8);
+          middle_result~store_uint(char + shift - 26, 8);
         }
       }
       else {
-        result~store_uint(char, 8);
+        middle_result~store_uint(char, 8);
       }
     }
   }
 
-  return result.end_cell();
+  return (stex, middle_result);
+
+}
+
+;; testable
+(cell) caesar_cipher_encrypt(int shift, cell text) method_id {
+  shift = shift % 26;
+
+  slice stex = text.begin_parse();
+
+  tuple t_result = empty_tuple();
+
+  t_result~tpush(stex~make_each_ref(shift));
+
+  while(~ stex.slice_refs_empty?()) {
+    stex = stex.preload_ref().begin_parse();
+    t_result~tpush(stex~make_each_ref(shift));
+  }
+
+  int t_len = t_result.tlen() - 1;
+  
+  builder last = t_result.at(t_len);
+  
+  int i = t_len;
+  repeat(t_len) {
+    builder before_last = t_result.at(i - 1);
+    before_last~store_ref_new(last.end_cell());
+    last = before_last;
+    i -= 1;
+  }
+
+  return last.end_cell();
 }
 
 ;; testable
