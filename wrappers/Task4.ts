@@ -52,7 +52,7 @@ export class Task4 implements Contract {
     async get_caesar_cipher_decrypt(provider: ContractProvider, shift: number, text: string) {
         const result = await provider.get('caesar_cipher_decrypt', [
             { type: 'int', value: BigInt(shift) },
-            { type: 'cell', cell: beginCell().storeBuffer(new Buffer(text)).endCell() }]);
+            { type: 'cell', cell: beginCell().storeUint(0, 32).storeBuffer(new Buffer(text)).endCell() }]);
 
         return result.stack.readString();
     }
