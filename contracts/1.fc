@@ -13,7 +13,7 @@
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
   slice str = tree.begin_parse();
   
-  if(tree.cell_hash() == hash) { ;; 1 test 
+  if(tree.cell_hash() == hash) { ;; 1 test  
     return tree; 
   }
 
