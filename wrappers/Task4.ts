@@ -50,24 +50,49 @@ export class Task4 implements Contract {
                     .storeBuffer(new Buffer(text))
                     .storeRef(beginCell()
                         .storeBuffer(new Buffer(text))
+                        .storeRef(beginCell()
+                            .storeBuffer(new Buffer(text))
+                            .endCell())
                         .endCell())
                     .endCell()
             }]);
-        
-        return result.stack.readString();
+
+        let slice = result.stack.readCell().asSlice();
+        let ref = slice.loadRef().asSlice()
+        let ref2 = ref.loadRef().asSlice()
+
+        return [
+            slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8),
+            ref.loadBits(8), ref.loadBits(8),
+            ref2.loadBits(8), ref2.loadBits(8),
+        ];
     }
 
     async get_caesar_cipher_decrypt(provider: ContractProvider, shift: number, text: string) {
         const result = await provider.get('caesar_cipher_decrypt', [
             { type: 'int', value: BigInt(shift) },
-            { type: 'cell', cell: beginCell()
-            .storeBuffer(new Buffer(text))
-            .storeRef(beginCell()
-                .storeBuffer(new Buffer(text))
-                .endCell())
-            .endCell() }]);
+            {
+                type: 'cell', cell: beginCell()
+                    .storeUint(0, 32)
+                    .storeBuffer(new Buffer(text))
+                    .storeRef(beginCell()
+                        .storeBuffer(new Buffer(text))
+                        .storeRef(beginCell()
+                            .storeBuffer(new Buffer(text))
+                            .endCell())
+                        .endCell())
+                    .endCell()
+            }]);
 
-        return result.stack.readString();
+        let slice = result.stack.readCell().asSlice();
+        let ref = slice.loadRef().asSlice()
+        let ref2 = ref.loadRef().asSlice()
+
+        return [
+            slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8), slice.loadBits(8),
+            ref.loadBits(8), ref.loadBits(8),
+            ref2.loadBits(8), ref2.loadBits(8),
+        ];
     }
 
 }

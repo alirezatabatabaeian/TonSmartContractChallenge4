@@ -33,11 +33,12 @@ describe('Task4', () => {
 
     it('should deploy', async () => {
         let shift = 1
-        let text = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+        // let text = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+        let text = "AB"
         let enc_text = await task4.get_caesar_cipher_encrypt(shift, text)
-        
+
         console.log("Outpu Character is:", enc_text)
 
-        // console.log("Outpu Character is:", await task4.get_caesar_cipher_decrypt(shift, enc_text))
+        console.log("Outpu Character is:", await task4.get_caesar_cipher_decrypt(shift, "BC"))
     });
 });

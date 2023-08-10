@@ -40,7 +40,7 @@ int is_between?(int min, int middle, int max) {
         }
       }
       else {
-        ;; middle_result~store_uint(char, 8);
+        middle_result~store_uint(char, 8);
       }
     }
   }
@@ -57,11 +57,7 @@ int is_between?(int min, int middle, int max) {
 
   tuple t_result = empty_tuple();
 
-  builder root_cell = begin_cell().store_uint(0, 32);
-
-  root_cell = stex~make_each_ref(shift);
-
-  t_result~tpush(root_cell);
+  t_result~tpush(stex~make_each_ref(shift));
 
   while(~ stex.slice_refs_empty?()) {
     stex = stex.preload_ref().begin_parse();
@@ -70,8 +66,6 @@ int is_between?(int min, int middle, int max) {
 
   int t_len = t_result.tlen() - 1;
   
-  ;; ~dump(t_result.tlen());
-
   builder last = t_result.at(t_len);
   
   int i = t_len;
@@ -83,9 +77,6 @@ int is_between?(int min, int middle, int max) {
   }
 
   return last.end_cell();
-  ;; cell ref = last.end_cell().begin_parse().preload_ref();
-  ;; return ref;
-
 }
 
 ;; testable
