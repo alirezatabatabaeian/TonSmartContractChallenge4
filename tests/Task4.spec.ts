@@ -32,6 +32,6 @@ describe('Task4', () => {
     });
 
     it('should deploy', async () => {
-        console.log("Input Character is A:", await )
+        console.log("Input Character is A:", await task4.get_ascii("A"))
     });
 });

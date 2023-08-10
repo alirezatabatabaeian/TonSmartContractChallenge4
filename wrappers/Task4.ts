@@ -7,7 +7,7 @@ export function task4ConfigToCell(config: Task4Config): Cell {
 }
 
 export class Task4 implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Task4(address);
@@ -27,11 +27,10 @@ export class Task4 implements Contract {
         });
     }
 
-    async get_fibonacci_sequence(provider: ContractProvider, n: number, k: number) {
-        const result = await provider.get('fibonacci_sequence', [
-            { type: 'int', value: BigInt(n) },
-            { type: 'int', value: BigInt(k) },]);
+    async get_ascii(provider: ContractProvider, char: string) {
+        const result = await provider.get('get_ascii', [
+            { type: 'cell', cell: beginCell().storeBuffer(new Buffer(char)).endCell()},]);
 
-        return result.stack.readTuple();
+        return result.stack.readNumber();
     }
 }

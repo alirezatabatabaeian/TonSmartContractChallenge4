@@ -22,5 +22,5 @@
 int get_ascii(cell char) method_id {
   slice s = char.begin_parse();
 
-  return s.preload_uint(8);
+  return s.preload_uint(1);
 }
