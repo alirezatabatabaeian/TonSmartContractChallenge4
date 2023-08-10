@@ -60,11 +60,11 @@ int is_between?(int min, int middle, int max) {
   t_result~tpush(stex~make_each_ref(shift));
 
   ;; while(~ stex.slice_refs_empty?()) {
-  repeat(2) {
+  repeat(3) {
     stex = stex.preload_ref().begin_parse();
     t_result~tpush(stex~make_each_ref(shift));
   }
-;; 51 exactly no ref / 31 exactly one
+;; 51 exactly no ref / 31 exactly one / 20 exactly two / 
   int t_len = t_result.tlen() - 1;
   
   builder last = t_result.at(t_len);
