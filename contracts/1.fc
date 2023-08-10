@@ -13,13 +13,13 @@
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
   slice str = tree.begin_parse();
   
-  ;; if(str.slice_empty?()) {
-  ;;   return tree;
-  ;; }
+  if(str.slice_empty?()) {
+    return tree;
+  }
 
-  ;; if(tree.cell_hash() == hash) {
-  ;;   return tree; 
-  ;; }
+  if(tree.cell_hash() == hash) {
+    return tree; 
+  }
 
   ;; while(~ str.slice_refs_empty?()) {
   ;;   cell ref = str~load_ref();
@@ -34,5 +34,5 @@
   ;;   }
   ;; }
 
-  return begin_cell().store_uint(10, 32).end_cell();
+  return begin_cell().end_cell();
 }
