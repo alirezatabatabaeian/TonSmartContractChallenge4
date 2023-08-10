@@ -10,7 +10,7 @@
 }
 
 int is_between?(int min, int middle, int max) {
-    return (min <= middle) & (middle <= max);
+  return (min <= middle) & (middle <= max);
 }
 
 ;; testable
@@ -20,7 +20,7 @@ int is_between?(int min, int middle, int max) {
 
   shift = shift % 26;
 
-  builder result = begin_cell();
+  builder result = begin_cell().store_uint(0, 32);
 
   while(~ stex.slice_empty?()) {
     int char = stex~load_uint(8);
