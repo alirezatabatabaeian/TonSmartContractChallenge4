@@ -14,7 +14,7 @@
   slice str = tree.begin_parse();
   
   ;; if(tree.cell_hash() == hash) { ;; one test case
-  ;;   return tree;
+  ;;   return tree; 
   ;; }
 
   while(~ str.slice_refs_empty?()) {
