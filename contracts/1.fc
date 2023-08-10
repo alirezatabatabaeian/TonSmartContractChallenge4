@@ -9,28 +9,47 @@
 () recv_internal() {
 }
 
+cell if_equal_hash(int hash, cell tree) method_id {
+  slice str = tree.begin_parse();
+
+  while(~ str.slice_refs_empty?()) {
+    cell ref = str~load_ref();
+    if (ref.cell_hash() == hash) {
+      return tree;
+    }
+    else {
+      cell maybe_answer = if_equal_hash(hash, ref);
+      ifnot (maybe_answer.cell_hash() == begin_cell().store_uint(666, 64).end_cell().cell_hash()) {
+        return maybe_answer;
+      }  
+    }
+  }
+  
+  return begin_cell().store_uint(666, 64).end_cell();
+}
+
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
   slice str = tree.begin_parse();
   
-  if(tree.cell_hash() == hash) { ;; 1 test
+  if(tree.cell_hash() == hash) { ;; 1 test + 1
     return tree; 
   }
 
-  ;; while(~ str.slice_refs_empty?()) {
-  ;;   cell ref = str~load_ref();
-  ;;   if (ref.cell_hash() == hash) {
-  ;;     return tree;
-  ;;   }
-  ;;   else {
-  ;;     cell maybe_answer = find_branch_by_hash(hash, ref);
-  ;;     ifnot (maybe_answer.begin_parse().slice_empty?()) {
-  ;;       return maybe_answer;
-  ;;     }  
-  ;;   }
-  ;; }
+  while(~ str.slice_refs_empty?()) {
+    cell ref = str~load_ref();
+    if (ref.cell_hash() == hash) {
+      return tree;
+    }
+    else {
+      cell maybe_answer = if_equal_hash(hash, ref);
+      ifnot (maybe_answer.cell_hash() == begin_cell().store_uint(666, 64).end_cell().cell_hash()) {
+        return maybe_answer;
+      }  
+    }
+  }
 
-  return begin_cell().store_uint(134743, 32).end_cell(); ;; 5 tests
+  return begin_cell().end_cell(); ;; 5 tests
 }
 
 ;; int get_cell_hash() method_id {
