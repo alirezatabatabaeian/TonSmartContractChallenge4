@@ -66,6 +66,8 @@ int is_between?(int min, int middle, int max) {
 
   int t_len = t_result.tlen() - 1;
   
+  ;; ~dump(t_result.tlen());
+
   builder last = t_result.at(t_len);
   
   int i = t_len;
@@ -77,6 +79,9 @@ int is_between?(int min, int middle, int max) {
   }
 
   return last.end_cell();
+  ;; cell ref = last.end_cell().begin_parse().preload_ref();
+  ;; return ref;
+
 }
 
 ;; testable

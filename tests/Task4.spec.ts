@@ -31,20 +31,12 @@ describe('Task4', () => {
         });
     });
 
-    // it('should deploy', async () => {
-    //     console.log("Input Character is AB:", await task4.get_ascii("A"))
-    // });
-
-    // it('should deploy', async () => {
-    //     console.log("Input Character is AB:", await task4.get_char(65 + 128))
-    // });
-
     it('should deploy', async () => {
         let shift = 1
         let text = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
-        console.log("Outpu Character is:", await task4.get_caesar_cipher_encrypt(shift, text))
-
-        text = await task4.get_caesar_cipher_encrypt(shift, text)
-        console.log("Outpu Character is:", await task4.get_caesar_cipher_decrypt(shift, text))
+        let enc_text = await task4.get_caesar_cipher_encrypt(shift, text)
+        console.log("Outpu Character is:", enc_text)
+        
+        console.log("Outpu Character is:", await task4.get_caesar_cipher_decrypt(shift, enc_text))
     });
 });
