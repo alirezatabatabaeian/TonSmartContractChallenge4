@@ -17,9 +17,9 @@
     return tree;
   }
 
-  if(tree.cell_hash() == hash) {
-    return tree; 
-  }
+  ;; if(tree.cell_hash() == hash) {
+  ;;   return tree; 
+  ;; }
 
   while(~ str.slice_refs_empty?()) {
     cell ref = str~load_ref();
