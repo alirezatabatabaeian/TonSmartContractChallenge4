@@ -59,7 +59,12 @@ export class Task4 implements Contract {
             {
                 type: 'cell', cell: beginCell()
                     .storeUint(0, 32)
-                    .storeBuffer(new Buffer(text))
+                    .storeRef(beginCell()
+                        .storeRef(beginCell()
+                            .storeRef(beginCell()
+                                .storeBuffer(new Buffer(text)).endCell())
+                            .endCell())
+                        .endCell())
                     .endCell()
             },]);
 
@@ -72,7 +77,8 @@ export class Task4 implements Contract {
         //     ref.loadBits(8), ref.loadBits(8),
         //     ref2.loadBits(8), ref2.loadBits(8),
         // ];
-        return result.stack.readString();
+        let ref = result.stack.readCell().asSlice().loadRef().asSlice().loadRef().asSlice().loadRef().asSlice();
+        return [ref.loadBits(8), ref.loadBits(8), ref.loadBits(8), ];
     }
 
     async get_caesar_cipher_decrypt(provider: ContractProvider, shift: number, text: string) {
