@@ -4,7 +4,7 @@
   The input is a string (https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#simple-message-with-comment)
   where the text is encrypted in a cell (after 32bit 00000000 prefix flag), the algorithm rotates the characters and the last ASCII
   character should go to the beginning. Return new text encoded in cell.
--}     
+-}
  
 ;; 127 orevall
 ;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 
@@ -62,7 +62,8 @@ int is_between?(int min, int middle, int max) {
 
   t_result~tpush(stex~make_each_ref(shift));
 
-  while(~ stex.slice_refs_empty?()) {
+  ;; while(~ stex.slice_refs_empty?()) {
+  repeat(255) {
     stex = stex.preload_ref().begin_parse();
     t_result~tpush(stex~make_each_ref(shift));
   }
@@ -79,10 +80,6 @@ int is_between?(int min, int middle, int max) {
     i -= 1;
   }
 
-  if(last.end_cell().begin_parse().slice_empty?()) {
-    return last.store_uint(0, 32).end_cell();
-  }
-  
   return last.end_cell();
 }
 
