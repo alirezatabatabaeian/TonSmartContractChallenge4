@@ -68,8 +68,8 @@ int is_between?(int min, int middle, int max) {
   int ref_num = 2;
   while(~ stex.slice_refs_empty?()) {
     if(ref_num <= 255) {
-      slice ref = stex~load_ref().begin_parse();
-      stex = ref;
+      stex = stex~load_ref().begin_parse();
+      ;; stex = ref;
       t_result~tpush(stex);
       ref_num += 1;
     }
