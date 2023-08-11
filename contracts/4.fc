@@ -88,5 +88,6 @@ int is_between?(int min, int middle, int max) {
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
-  return caesar_cipher_encrypt(26 - shift, text);
+  ;; return caesar_cipher_encrypt(26 - shift, text);
+  return begin_cell().end_cell();
 }
