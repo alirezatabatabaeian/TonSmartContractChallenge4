@@ -17,22 +17,21 @@
     return tree; 
   }
 
-  cell maybe_answer = begin_cell().end_cell();
+  int ref_num = str.slice_refs();
 
-  while(~ str.slice_refs_empty?()) {
+  ;; while(~ str.slice_refs_empty?()) {
+  repeat(ref_num) {
     cell ref = str~load_ref();
     if (ref.cell_hash() == hash) {
       return ref;
     }
     else {
-      ;; cell maybe_answer = find_branch_by_hash(hash, ref);
-      maybe_answer = find_branch_by_hash(hash, ref);
-    ;;   ifnot (maybe_answer.begin_parse().slice_empty?()) {
-    ;;     return maybe_answer;
-    ;;   }  
+      cell maybe_answer = find_branch_by_hash(hash, ref);
+      ifnot (maybe_answer.begin_parse().slice_empty?()) {
+        return maybe_answer;
+      }  
     }
   }
 
-  ;; return begin_cell().end_cell();
-  return maybe_answer;
+  return begin_cell().end_cell();
 }
