@@ -20,7 +20,7 @@
   int empty_cell_hash = empty_cell.cell_hash();
 
   repeat(str.slice_refs()) {
-    cell maybe_answer = find_branch_by_hash(hash, str~load_ref()); 
+    cell maybe_answer = find_branch_by_hash(hash, str~load_ref());
     ifnot (maybe_answer.cell_hash() == empty_cell_hash) { 
       return maybe_answer;
     }  
