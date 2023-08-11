@@ -7,7 +7,7 @@
 -}
  
 ;; 127 orevall
-;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 
+;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 3 exactly ten ref / 
 
 () recv_internal() {
 }
@@ -63,7 +63,7 @@ int is_between?(int min, int middle, int max) {
   t_result~tpush(stex~make_each_ref(shift));
 
   ;; while(~ stex.slice_refs_empty?()) {
-  repeat(20) {
+  repeat(250) {
     stex = stex.preload_ref().begin_parse();
     t_result~tpush(stex~make_each_ref(shift));
   }
