@@ -63,10 +63,10 @@ int is_between?(int min, int middle, int max) {
   t_result~tpush(stex~make_each_ref(shift));
 
   while(~ stex.slice_refs_empty?()) {
-    ;; stex = stex.preload_ref().begin_parse();
-    ;; t_result~tpush(stex~make_each_ref(shift));
-    slice ref = stex~load_ref().begin_parse();
-    t_result~tpush(ref~make_each_ref(shift));
+    stex = stex.preload_ref().begin_parse();
+    t_result~tpush(stex~make_each_ref(shift));
+    ;; slice ref = stex~load_ref().begin_parse();
+    ;; t_result~tpush(ref~make_each_ref(shift));
   }
 
   int t_len = t_result.tlen() - 1;
@@ -76,7 +76,9 @@ int is_between?(int min, int middle, int max) {
   int i = t_len;
   repeat(t_len) {
     builder before_last = t_result.at(i - 1);
-    before_last~store_ref_new(last.end_cell());
+    ifnot (last.end_cell().begin_parse().slice_empty?()){
+      before_last~store_ref_new(last.end_cell());
+    }
     last = before_last;
     i -= 1;
   }
