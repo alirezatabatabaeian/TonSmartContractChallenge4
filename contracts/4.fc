@@ -9,8 +9,6 @@
 ;; 127 orevall
 ;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 3 exactly ten ref / 
 
-forall X -> (tuple, X) tlpop(tuple t) asm "TPOP";
-
 () recv_internal() {
 }
 
@@ -21,7 +19,7 @@ int is_between?(int min, int middle, int max) {
   return (min <= middle) & (middle <= max);
 }
 
-(builder) make_each_ref(slice stex, int shift) {
+(slice, builder) make_each_ref(slice stex, int shift) {
   builder middle_result = begin_cell();
 
   while(~ stex.slice_data_empty?()) {
@@ -50,7 +48,7 @@ int is_between?(int min, int middle, int max) {
     }
   }
 
-  return middle_result;
+  return (stex, middle_result);
 
 }
 
@@ -61,70 +59,27 @@ int is_between?(int min, int middle, int max) {
   slice stex = text.begin_parse();
 
   tuple t_result = empty_tuple();
-  t_result~tpush(stex);
-  
-  tuple max_4_tuple = empty_tuple();
 
-  int ref_num = 2;
+  t_result~tpush(stex~make_each_ref(shift));
+
   while(~ stex.slice_refs_empty?()) {
-    if(ref_num <= 255) {
-      stex = stex~load_ref().begin_parse();
-      ;; stex = ref;
-      t_result~tpush(stex);
-      ref_num += 1;
-    }
-    else {
-      max_4_tuple~tpush(t_result);
-      ref_num = 1;
-      t_result = empty_tuple();
-    }
+    stex = stex.preload_ref().begin_parse();
+    t_result~tpush(stex~make_each_ref(shift));
   }
 
-  tuple last_tuple = max_4_tuple~tlpop();
-  slice last_of_last = last_tuple~tlpop();
-  builder enc_last_of_last = last_of_last.make_each_ref(shift);
-  max_4_tuple~tpush(last_tuple);
-
-  int max_4_len = max_4_tuple.tlen();
-  int i = max_4_len - 1;
-  repeat(max_4_len) {
-    last_tuple = max_4_tuple.at(i);
-    
-    int last_tuple_len = last_tuple.tlen();
-    int j = last_tuple_len - 1;
-    repeat(last_tuple_len){
-      slice last_element = last_tuple.at(j);
-      builder enc_last_element = last_element.make_each_ref(shift);
-      enc_last_element~store_ref_new(enc_last_of_last.end_cell());
-      enc_last_of_last = enc_last_element;
-      j -= 1;
-    }
-
+  int t_len = t_result.tlen() - 1;
+  
+  builder last = t_result.at(t_len);
+  
+  int i = t_len;
+  repeat(t_len) {
+    builder before_last = t_result.at(i - 1);
+    before_last~store_ref_new(last.end_cell());
+    last = before_last;
     i -= 1;
   }
 
-  return enc_last_of_last.end_cell();
-
-  ;; t_result~tpush(stex~make_each_ref(shift));
-
-  ;; while(~ stex.slice_refs_empty?()) {
-  ;;   stex = stex.preload_ref().begin_parse();
-  ;;   t_result~tpush(stex~make_each_ref(shift));
-  ;; }
-
-  ;; int t_len = t_result.tlen() - 1;
-  
-  ;; builder last = t_result.at(t_len);
-  
-  ;; int i = t_len;
-  ;; repeat(t_len) {
-  ;;   builder before_last = t_result.at(i - 1);
-  ;;   before_last~store_ref_new(last.end_cell());
-  ;;   last = before_last;
-  ;;   i -= 1;
-  ;; }
-
-  ;; return last.end_cell();
+  return last.end_cell();
 }
 
 ;; testable
