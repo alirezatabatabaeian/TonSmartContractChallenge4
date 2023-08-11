@@ -19,15 +19,13 @@
 
   repeat(str.slice_refs()) {
     cell ref = str~load_ref();
-    if (ref.cell_hash() == hash) {
-      return ref;
-    }
-    ;; else {
+    ;; if (ref.cell_hash() == hash) {
+    ;;   return ref;
+    ;; }
     cell maybe_answer = find_branch_by_hash(hash, ref);
     ifnot (maybe_answer.begin_parse().slice_empty?()) {
       return maybe_answer;
     }  
-    ;; }
   }
 
   return begin_cell().end_cell();
