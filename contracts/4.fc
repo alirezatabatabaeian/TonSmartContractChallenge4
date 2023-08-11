@@ -7,7 +7,7 @@
 -}     
  
 ;; 127 orevall
-;; 51 exactly no ref / 31 exactly one / 20 exactly two / 
+;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 
 
 () recv_internal() {
 }
@@ -30,7 +30,7 @@ int is_between?(int min, int middle, int max) {
         middle_result~store_uint(char + shift, 8);
       }
       else {
-        ;; middle_result~store_uint(char + shift - 26, 8);
+        middle_result~store_uint(char + shift - 26, 8);
       }
     }
     else {
@@ -39,7 +39,7 @@ int is_between?(int min, int middle, int max) {
           middle_result~store_uint(char + shift, 8);
         }
         else {
-          ;; middle_result~store_uint(char + shift - 26, 8);
+          middle_result~store_uint(char + shift - 26, 8);
         }
       }
       else {
@@ -59,26 +59,61 @@ int is_between?(int min, int middle, int max) {
   slice stex = text.begin_parse();
 
   tuple t_result = empty_tuple();
+  tuple t_result2 = empty_tuple();
+
 
   t_result~tpush(stex~make_each_ref(shift));
 
+  int j = 1;
   while(~ stex.slice_refs_empty?()) {
     stex = stex.preload_ref().begin_parse();
-    t_result~tpush(stex~make_each_ref(shift));
-    ;; slice ref = stex~load_ref().begin_parse();
-    ;; t_result~tpush(ref~make_each_ref(shift));
+    if(j <= 255) {
+      t_result~tpush(stex~make_each_ref(shift));
+    }
+    else {
+      t_result2~tpush(stex~make_each_ref(shift));
+    }
+    j += 1;
   }
 
-  int t_len = t_result.tlen() - 1;
+  j -= 1;
+
+  if( j <= 255) {
+    int t_len = t_result.tlen() - 1;
   
-  builder last = t_result.at(t_len);
+    builder last = t_result.at(t_len);
   
+    int i = t_len;
+    repeat(t_len) {
+      builder before_last = t_result.at(i - 1);
+      before_last~store_ref_new(last.end_cell());
+      last = before_last;
+      i -= 1;
+    }
+
+    return last.end_cell();
+  }
+
+  int t_len = t_result2.tlen() - 1;
+
+  builder last = t_result2.at(t_len);
+
+  int i = t_len;
+  repeat(t_len) {
+    builder before_last = t_result2.at(i - 1);
+    before_last~store_ref_new(last.end_cell());
+    last = before_last;
+    i -= 1;
+  }
+
+  int t_len = t_result.tlen();
+
+  ;; builder last = t_result.at(t_len);
+
   int i = t_len;
   repeat(t_len) {
     builder before_last = t_result.at(i - 1);
-    ifnot (last.end_cell().begin_parse().slice_empty?()){
-      before_last~store_ref_new(last.end_cell());
-    }
+    before_last~store_ref_new(last.end_cell());
     last = before_last;
     i -= 1;
   }
