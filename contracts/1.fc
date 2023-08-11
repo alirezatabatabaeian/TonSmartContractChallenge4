@@ -22,7 +22,6 @@
     ifnot (maybe_answer.begin_parse().slice_empty?()) {
       return maybe_answer;
     }
-    str~touch();
   }
 
   return begin_cell().end_cell();
