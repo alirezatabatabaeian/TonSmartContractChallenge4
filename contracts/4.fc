@@ -54,7 +54,7 @@ int is_between?(int min, int middle, int max) {
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
-  shift = shift % 128;
+  shift = shift % 26;
 
   slice stex = text.begin_parse();
 
@@ -79,6 +79,10 @@ int is_between?(int min, int middle, int max) {
     i -= 1;
   }
 
+  if(last.end_cell().begin_parse().slice_empty?()) {
+    return last.store_uint(0, 32).end_cell();
+  }
+  
   return last.end_cell();
 }
 
