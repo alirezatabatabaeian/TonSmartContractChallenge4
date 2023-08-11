@@ -19,7 +19,7 @@
 
   int ref_num = str.slice_refs();
 
-  ;; while(~ str.slice_refs_empty?()) {
+  ;; while(~ str.slice_refs_empty?()) { 
   repeat(ref_num) {
     cell ref = str~load_ref();
     if (ref.cell_hash() == hash) {
