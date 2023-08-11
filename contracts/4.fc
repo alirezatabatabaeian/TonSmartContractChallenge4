@@ -30,7 +30,7 @@ int is_between?(int min, int middle, int max) {
         middle_result~store_uint(char + shift, 8);
       }
       else {
-        middle_result~store_uint(char + shift - 26, 8);
+        ;; middle_result~store_uint(char + shift - 26, 8);
       }
     }
     else {
@@ -39,7 +39,7 @@ int is_between?(int min, int middle, int max) {
           middle_result~store_uint(char + shift, 8);
         }
         else {
-          middle_result~store_uint(char + shift - 26, 8);
+          ;; middle_result~store_uint(char + shift - 26, 8);
         }
       }
       else {
@@ -88,6 +88,5 @@ int is_between?(int min, int middle, int max) {
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
-  ;; return caesar_cipher_encrypt(26 - shift, text);
-  return begin_cell().end_cell();
+  return caesar_cipher_encrypt(26 - shift, text);
 }
