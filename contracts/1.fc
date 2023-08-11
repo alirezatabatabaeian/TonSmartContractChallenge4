@@ -19,9 +19,9 @@
 
   repeat(str.slice_refs()) {
     cell maybe_answer = find_branch_by_hash(hash, str~load_ref());
-    ifnot (maybe_answer.cell_hash() == begin_cell().end_cell().cell_hash()) {
-      return maybe_answer;
-    }  
+    ;; ifnot (maybe_answer.begin_parse().slice_empty?()) {
+    return maybe_answer;
+    ;; }
   }
 
   return begin_cell().end_cell();
