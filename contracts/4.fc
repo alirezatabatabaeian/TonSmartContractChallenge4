@@ -10,43 +10,34 @@
 }
 
 (int) tlen(tuple t) inline asm "TLEN";
+
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
-forall X -> (tuple, ()) cons_new(tuple tail, X head) asm(head tail) "CONS";
+
+forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 
 int is_between?(int min, int middle, int max) inline {
   return (min <= middle) & (middle <= max);
 }
 
 (builder, ()) change_char(builder middle_result, int char, int shift) inline {
+  int new_char = 0;
   if(is_between?(65, char, 90)) {
-    if(is_between?(65, char + shift, 90)) {
-      middle_result~store_uint(char + shift, 8);
-    }
-      else {
-      middle_result~store_uint(char + shift - 26, 8);
-    }
+    new_char = is_between?(65, char + shift, 90) ? char + shift : char + shift - 26;
   }
   elseif(is_between?(97, char, 122)) {
-    if(is_between?(97, char + shift, 122)) {
-      middle_result~store_uint(char + shift, 8);
-    }
-      else {
-      middle_result~store_uint(char + shift - 26, 8);
-    }
+    new_char = is_between?(97, char + shift, 122) ? char + shift : char + shift - 26;
   }
   else {
-    middle_result~store_uint(char, 8);
+    new_char = char;
   }
-
-  return (middle_result, ());
+  
+  return (middle_result.store_uint(new_char, 8), ());
 }
 
 (builder) make_each_ref(slice stex, int shift) inline {
   builder middle_result = begin_cell();
-
-  while(~ stex.slice_data_empty?()) {
-    int char = stex~load_uint(8);
-    middle_result~change_char(char, shift);
+  repeat(stex.slice_bits() / 8) {
+    middle_result~change_char(stex~load_uint(8), shift);
   }
 
   return middle_result;
