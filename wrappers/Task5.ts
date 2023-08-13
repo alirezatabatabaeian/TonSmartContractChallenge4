@@ -34,4 +34,5 @@ export class Task5 implements Contract {
 
         return result.stack.readTuple();
     }
+
 }

@@ -5,9 +5,6 @@
   where the text is encrypted in a cell (after 32bit 00000000 prefix flag), the algorithm rotates the characters and the last ASCII
   character should go to the beginning. Return new text encoded in cell.
 -}
- 
-;; 127 orevall
-;; 51 exactly no ref / 31 exactly one ref / 20 exactly two ref / 3 exactly ten ref / 
 
 () recv_internal() {
 }
@@ -19,7 +16,7 @@ int is_between?(int min, int middle, int max) {
   return (min <= middle) & (middle <= max);
 }
 
-(slice, builder) make_each_ref(slice stex, int shift) {
+(builder) make_each_ref(slice stex, int shift) {
   builder middle_result = begin_cell();
 
   while(~ stex.slice_data_empty?()) {
@@ -48,8 +45,7 @@ int is_between?(int min, int middle, int max) {
     }
   }
 
-  return (stex, middle_result);
-
+  return middle_result;
 }
 
 ;; testable
@@ -60,14 +56,12 @@ int is_between?(int min, int middle, int max) {
 
   tuple t_result = empty_tuple();
 
-  ;; t_result~tpush(stex~make_each_ref(shift)); ;; here
-  t_result = cons(stex~make_each_ref(shift), t_result);
+  t_result = cons(stex.make_each_ref(shift), t_result);
 
   int i = 0;
   while(~ stex.slice_refs_empty?()) {
     stex = stex.preload_ref().begin_parse();
-    ;; t_result~tpush(stex~make_each_ref(shift)); ;; here
-    t_result = cons(stex~make_each_ref(shift), t_result);
+    t_result = cons(stex.make_each_ref(shift), t_result);
     i += 1;
   }
   
@@ -78,14 +72,6 @@ int is_between?(int min, int middle, int max) {
     before_last~store_ref_new(last.end_cell());
     last = before_last;
   }
-  
-  ;; int i = t_len;
-  ;; repeat(t_len) {
-  ;;   builder before_last = t_result.at(i - 1);
-  ;;   before_last~store_ref_new(last.end_cell());
-  ;;   last = before_last;
-  ;;   i -= 1;
-  ;; }
 
   return last.end_cell();
 }

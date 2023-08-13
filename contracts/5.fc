@@ -16,6 +16,8 @@
 () recv_internal() {
 }
 
+int add(int a, int b) asm "ADD";
+
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
   tuple final_answer = empty_tuple();
@@ -24,14 +26,14 @@
   int before = 1;
 
   repeat(n) {
-    (before_before, before) = (before, before + before_before);
+    (before_before, before) = (before, add(before, before_before));
   }
 
   repeat(k) {
-    (before_before, before) = (before, before + before_before);
+    (before_before, before) = (before, add(before, before_before));
     final_answer~tpush(before);
   }
-
+  
   return final_answer;
 }
 
