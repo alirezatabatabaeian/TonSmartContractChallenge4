@@ -9,40 +9,44 @@
 () recv_internal() {
 }
 
-(int) tlen(tuple t) asm "TLEN";
-(builder, ()) store_ref_new(builder b, cell c) asm(c b) "STREF";
+(int) tlen(tuple t) inline asm "TLEN";
+(builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
+forall X -> (tuple, ()) cons_new(tuple tail, X head) asm(head tail) "CONS";
 
-int is_between?(int min, int middle, int max) {
+int is_between?(int min, int middle, int max) inline {
   return (min <= middle) & (middle <= max);
 }
 
-(builder) make_each_ref(slice stex, int shift) {
+(builder, ()) change_char(builder middle_result, int char, int shift) inline {
+  if(is_between?(65, char, 90)) {
+    if(is_between?(65, char + shift, 90)) {
+      middle_result~store_uint(char + shift, 8);
+    }
+      else {
+      middle_result~store_uint(char + shift - 26, 8);
+    }
+  }
+  elseif(is_between?(97, char, 122)) {
+    if(is_between?(97, char + shift, 122)) {
+      middle_result~store_uint(char + shift, 8);
+    }
+      else {
+      middle_result~store_uint(char + shift - 26, 8);
+    }
+  }
+  else {
+    middle_result~store_uint(char, 8);
+  }
+
+  return (middle_result, ());
+}
+
+(builder) make_each_ref(slice stex, int shift) inline {
   builder middle_result = begin_cell();
 
   while(~ stex.slice_data_empty?()) {
     int char = stex~load_uint(8);
-
-    if(is_between?(65, char, 90)) {
-      if(is_between?(65, char + shift, 90)) {
-        middle_result~store_uint(char + shift, 8);
-      }
-      else {
-        middle_result~store_uint(char + shift - 26, 8);
-      }
-    }
-    else {
-      if(is_between?(97, char, 122)) {
-        if(is_between?(97, char + shift, 122)) {
-          middle_result~store_uint(char + shift, 8);
-        }
-        else {
-          middle_result~store_uint(char + shift - 26, 8);
-        }
-      }
-      else {
-        middle_result~store_uint(char, 8);
-      }
-    }
+    middle_result~change_char(char, shift);
   }
 
   return middle_result;
@@ -51,26 +55,20 @@ int is_between?(int min, int middle, int max) {
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   shift = shift % 26;
-
   slice stex = text.begin_parse();
-
   tuple t_result = empty_tuple();
-
-  t_result = cons(stex.make_each_ref(shift), t_result);
+  t_result~cons_new(stex.make_each_ref(shift));
 
   int i = 0;
   while(~ stex.slice_refs_empty?()) {
     stex = stex.preload_ref().begin_parse();
-    t_result = cons(stex.make_each_ref(shift), t_result);
+    t_result~cons_new(stex.make_each_ref(shift));
     i += 1;
   }
   
   builder last = t_result~list_next();
-
   repeat(i) {
-    builder before_last = t_result~list_next();
-    before_last~store_ref_new(last.end_cell());
-    last = before_last;
+    last = t_result~list_next().store_ref_new(last.end_cell());
   }
 
   return last.end_cell();
