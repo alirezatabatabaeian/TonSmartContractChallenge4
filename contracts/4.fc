@@ -15,25 +15,9 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   shift = shift % 26;
-  slice stex = text.begin_parse();
+  slice stex = begin_cell().store_ref(text).end_cell().begin_parse();
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
-  repeat(stex.slice_bits() / 8) {
-    int char = stex~load_uint(8);
-    int new_char = 0;
-    if((65 <= char) & (char <= 90)) {
-      new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
-    }
-    elseif((97 <= char) & (char <= 122)) {
-      new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
-    }
-    else {
-      new_char = char;
-    }
-    middle_result~store_uint(new_char, 8);
-  }
-  t_result~cons_new(middle_result);
-
   int i = 0;
   repeat(stex.slice_depth()) {
     stex = stex.preload_ref().begin_parse();
@@ -57,7 +41,7 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   }
   
   builder last = t_result~list_next();
-  repeat(i) {
+  repeat(i - 1) {
     last = t_result~list_next().store_ref_new(last.end_cell());
   }
 
