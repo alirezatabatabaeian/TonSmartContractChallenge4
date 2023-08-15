@@ -159,6 +159,5 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   ;; ~dump(111111);
-  cell out = null();
-  return out;
+  return begin_cell().end_cell();
 }
