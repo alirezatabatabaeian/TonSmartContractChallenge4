@@ -10,20 +10,15 @@
 }
 
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
-
 forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-
-int is_between?(int min, int middle, int max) inline {
-  return (min <= middle) & (middle <= max);
-}
 
 (builder, ()) change_char(builder middle_result, int char, int shift) inline {
   int new_char = 0;
-  if(is_between?(65, char, 90)) {
-    new_char = is_between?(65, char + shift, 90) ? char + shift : char + shift - 26;
+  if((65 <= char) & (char <= 95)) {
+    new_char = ((65 <= char + shift) & (char + shift <= 95)) ? char + shift : char + shift - 26;
   }
-  elseif(is_between?(97, char, 122)) {
-    new_char = is_between?(97, char + shift, 122) ? char + shift : char + shift - 26;
+  elseif((97 <= char) & (char <= 122)) {
+    new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
   }
   else {
     new_char = char;
