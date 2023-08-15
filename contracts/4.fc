@@ -10,15 +10,20 @@
 }
 
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
+
 forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS";
+
+int is_between?(int min, int middle, int max) inline {
+  return (min <= middle) & (middle <= max);
+}
 
 (builder, ()) change_char(builder middle_result, int char, int shift) inline {
   int new_char = 0;
-  if((65 <= char) & (char <= 95)) {
-    new_char = ((65 <= char + shift) & (char + shift <= 95)) ? char + shift : char + shift - 26;
+  if(is_between?(65, char, 90)) {
+    new_char = is_between?(65, char + shift, 90) ? char + shift : char + shift - 26;
   }
-  elseif((97 <= char) & (char <= 122)) {
-    new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
+  elseif(is_between?(97, char, 122)) {
+    new_char = is_between?(97, char + shift, 122) ? char + shift : char + shift - 26;
   }
   else {
     new_char = char;
@@ -27,25 +32,26 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   return (middle_result.store_uint(new_char, 8), ());
 }
 
+(builder) make_each_ref(slice stex, int shift) inline {
+  builder middle_result = begin_cell();
+  repeat(stex.slice_bits() / 8) {
+    middle_result~change_char(stex~load_uint(8), shift);
+  }
+
+  return middle_result;
+}
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   shift = shift % 26;
   slice stex = text.begin_parse();
   tuple t_result = empty_tuple();
-  builder middle_result = begin_cell();
-  repeat(stex.slice_bits() / 8) {
-    middle_result~change_char(stex~load_uint(8), shift);
-  }
-  t_result~cons_new(middle_result);
+  t_result~cons_new(stex.make_each_ref(shift));
 
   int i = 0;
   repeat(stex.slice_depth()) {
     stex = stex.preload_ref().begin_parse();
-    middle_result = begin_cell();
-    repeat(stex.slice_bits() / 8) {
-      middle_result~change_char(stex~load_uint(8), shift);
-    }
-    t_result~cons_new(middle_result);
+    t_result~cons_new(stex.make_each_ref(shift));
     i += 1;
   }
   
