@@ -26,27 +26,18 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
 
 (int) pow2(int e) {
   int n = 2;
-
-  if (e == 0) {
-    return 1;
-  }
-
-  if (e == 1) {
-    return n;
-  }
-
+  if (e == 0) { return 1; }
+  if (e == 1) { return n; }
   int p = pow2(e / 2);
   p *= p;
   if ((e % 2) == 1) {
     p *= n;
   }
-
   return p;
 }
 
 int preload_uint_v2(slice data, int bits) {
   int data_bits = data.slice_bits();
-
   if(data_bits >= bits) {
     return data.preload_uint(bits);
   }
@@ -60,7 +51,6 @@ int preload_uint_v2(slice data, int bits) {
 
 (builder, tuple, int) store_uint_v2(builder result, tuple t_result, int data, int data_bits, int i) {
   int empty_bits = 1023 - result.builder_bits();
-
   if(empty_bits > data_bits) {
     return (result.store_uint(data, data_bits), t_result, i);
   }
@@ -69,33 +59,29 @@ int preload_uint_v2(slice data, int bits) {
     return (begin_cell(), t_result.cons_new(result), i + 1);
   }
   else {
-    slice s = begin_cell().store_uint(data, data_bits).end_cell().begin_parse();
-    int first_part = s~load_uint(empty_bits);
-    int second_part = s~load_uint(data_bits - empty_bits);
-    result~store_uint(first_part, empty_bits);
+    ;; slice s = begin_cell().store_uint(data, data_bits).end_cell().begin_parse();
+    ;; int first_part = s~load_uint(empty_bits);
+    ;; int second_part = s~load_uint(data_bits - empty_bits);
+    ;; result~store_uint(first_part, empty_bits);
+    ;; t_result~cons_new(result);
+    ;; i += 1;
+    ;; return begin_cell().store_uint_v2(t_result, second_part, data_bits - empty_bits, i);
     t_result~cons_new(result);
     i += 1;
-    return begin_cell().store_uint_v2(t_result, second_part, data_bits - empty_bits, i);
+    result = begin_cell();
+    (result, t_result, i) = result.store_uint_v2(t_result, data, data_bits, i);
+    return (result, t_result, i);
   }
 }
 
 (slice, ()) skip_bits_v2(slice data, int bits) {
   int left_data_bits = data.slice_bits();
-
-  if(left_data_bits > bits) {
-    return (data.skip_bits(bits), ());
-  }
+  if(left_data_bits > bits) { return (data.skip_bits(bits), ()); }
   elseif(left_data_bits == bits) {
-    if(data.slice_refs_empty?()) {
-      return (begin_cell().end_cell().begin_parse(), ());
-    }
-    else {
-      return (data.preload_ref().begin_parse(), ());
-    }
+    if(data.slice_refs_empty?()) { return (begin_cell().end_cell().begin_parse(), ()); }
+    else { return (data.preload_ref().begin_parse(), ()); }
   }
-  else {
-    return data.preload_ref().begin_parse().skip_bits_v2(bits - left_data_bits);
-  }
+  else { return data.preload_ref().begin_parse().skip_bits_v2(bits - left_data_bits); }
 }
 
 ;; testable
@@ -110,6 +96,7 @@ int preload_uint_v2(slice data, int bits) {
   (_, int data_bits, _, _) = slist.all_data_bits(1024);
   while(data_bits >= flag_bits) {
     int load_value = slist.preload_uint_v2(flag_bits);
+    
     if(load_value == flag) {
       (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
       slist~skip_bits_v2(flag_bits);
@@ -124,8 +111,7 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   if(data_bits > 0) {
-    int left_value = slist.preload_uint_v2(data_bits);
-    (result, t_result, i) = result.store_uint_v2(t_result, left_value, data_bits, i);
+    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(data_bits), data_bits, i);
   }
 
   builder last = result; 
