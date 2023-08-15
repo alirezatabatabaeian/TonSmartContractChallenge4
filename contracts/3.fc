@@ -144,16 +144,17 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   ;; ~dump(i);
-  builder last = begin_cell();
-  if(result.builder_bits() >= 0) {
-    ;; ~dump(11);
-    last = result;
-  }
-  else {
-    ;; ~dump(111);
-    last = t_result~list_next();
-    i -= 1;
-  }
+  ;; builder last = begin_cell();
+  builder last = result;
+  ;; if(result.builder_bits() >= 0) {
+  ;;   ;; ~dump(11);
+  ;;   last = result;
+  ;; }
+  ;; else {
+  ;;   ;; ~dump(111);
+  ;;   last = t_result~list_next();
+  ;;   i -= 1;
+  ;; }
 
   ;; ~dump(1111);
   repeat(i) {
