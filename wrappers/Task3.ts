@@ -7,7 +7,7 @@ export function task3ConfigToCell(config: Task3Config): Cell {
 }
 
 export class Task3 implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Task3(address);
@@ -25,5 +25,23 @@ export class Task3 implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async get_all_data_bits_test(provider: ContractProvider, n: number,) {
+        const result = await provider.get('all_data_bits_test', [
+            {
+                type: 'cell', cell: beginCell()
+                    .storeUint(0, 25)
+                    .storeRef(beginCell()
+                        .storeRef(beginCell()
+                            .storeUint(1, 35)
+                            .endCell())
+                        .endCell())
+                    .endCell()
+            },
+            { type: 'int', value: BigInt(n) },
+        ]);
+
+        return result.stack.readNumber();
     }
 }

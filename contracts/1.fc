@@ -19,7 +19,7 @@
 
   repeat(str.slice_refs()) {
     cell maybe_answer = find_branch_by_hash(hash, str~load_ref());
-    ifnot (maybe_answer.begin_parse().slice_empty?()) {
+    ifnot(maybe_answer.begin_parse().slice_empty?()) {
       return maybe_answer;
     }
   }
