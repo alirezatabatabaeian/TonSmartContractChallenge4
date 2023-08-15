@@ -104,6 +104,9 @@ int preload_uint_v2(slice data, int bits) {
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
+  if(linked_list.begin_parse().slice_empty?()) {
+    return begin_cell().end_cell();
+  }
   int flag_bits = flag.uint_bits();
   ;; ~dump(flag_bits);
   int value_bits = value.uint_bits();
