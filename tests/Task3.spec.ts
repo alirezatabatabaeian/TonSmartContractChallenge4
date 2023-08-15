@@ -32,11 +32,6 @@ describe('Task3', () => {
     });
 
     it('should deploy', async () => {
-        // the check is done inside beforeEach
-        // blockchain and task3 are ready to use
-    });
-
-    it('should deploy', async () => {
-        // console.log(await task3.get_all_data_bits_test(1))
+        console.log(await task3.get_find_and_replace(1, 3))
     });
 });

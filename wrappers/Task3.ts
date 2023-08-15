@@ -27,21 +27,33 @@ export class Task3 implements Contract {
         });
     }
 
-    async get_all_data_bits_test(provider: ContractProvider, n: number,) {
-        const result = await provider.get('all_data_bits_test', [
+    async get_find_and_replace(provider: ContractProvider, flag: number, value: number,) {
+        const result = await provider.get('find_and_replace', [
             {
-                type: 'cell', cell: beginCell()
-                    .storeUint(0, 25)
-                    .storeRef(beginCell()
-                        .storeRef(beginCell()
-                            .storeUint(1, 35)
-                            .endCell())
-                        .endCell())
+                type: 'int',
+                value: BigInt(flag)
+            },
+            {
+                type: 'int',
+                value: BigInt(value)
+            },
+            {
+                type: 'cell',
+                cell: beginCell()
+                    .storeUint(0, 1)
+                    .storeUint(1, 1)
+                    .storeUint(0, 1)
+                    .storeUint(1, 1)
+                    // .storeRef(beginCell()
+                    //     .storeRef(beginCell()
+                    //         .storeUint(1, 35)
+                    //         .endCell())
+                    //     .endCell())
                     .endCell()
             },
-            { type: 'int', value: BigInt(n) },
         ]);
 
-        return result.stack.readNumber();
+        let main_slice = result.stack.readCell().asSlice();
+        return [main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),];
     }
 }

@@ -20,7 +20,6 @@
 
 int uint_bits(int x) asm "UBITSIZE";
 (int, int, int, int) all_data_bits(slice data, int n) asm "SDATASIZEQ";
-;; int pow2(int n) asm "PUSHPOW2";
 forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
@@ -95,47 +94,48 @@ int preload_uint_v2(slice data, int bits) {
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  int flag_bits = flag.uint_bits();
-  int value_bits = value.uint_bits();
-  slice slist = linked_list.begin_parse();
-  builder result = begin_cell();
-  tuple t_result = empty_tuple();
-  int i = 0;
+  ;; int flag_bits = flag.uint_bits();
+  ;; int value_bits = value.uint_bits();
+  ;; slice slist = linked_list.begin_parse();
+  ;; builder result = begin_cell();
+  ;; tuple t_result = empty_tuple();
+  ;; int i = 0;
 
-  (int data_bits, _, _, _) = slist.all_data_bits(1024);
-  while(data_bits >= flag_bits) {
-    int load_value = slist.preload_uint_v2(flag_bits);
-    if(load_value == flag) {
-      (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
-      slist~skip_bits_v2(flag_bits);
-      data_bits -= flag_bits;
-    }
-    else {
-      int one_bit = slist.preload_uint_v2(1);
-      (result, t_result, i) = result.store_uint_v2(t_result, one_bit, 1, i);
-      slist~skip_bits_v2(1);
-      data_bits -= 1;
-    }
-  }
+  ;; (int data_bits, _, _, _) = slist.all_data_bits(1024);
+  ;; while(data_bits >= flag_bits) {
+  ;;   int load_value = slist.preload_uint_v2(flag_bits);
+  ;;   if(load_value == flag) {
+  ;;     (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
+  ;;     slist~skip_bits_v2(flag_bits);
+  ;;     data_bits -= flag_bits;
+  ;;   }
+  ;;   else {
+  ;;     int one_bit = slist.preload_uint_v2(1);
+  ;;     (result, t_result, i) = result.store_uint_v2(t_result, one_bit, 1, i);
+  ;;     slist~skip_bits_v2(1);
+  ;;     data_bits -= 1;
+  ;;   }
+  ;; }
 
-  (int left_data_bits, _, _, _) = slist.all_data_bits(1024);
-  if(left_data_bits > 0) {
-    int left_value = slist.preload_uint_v2(left_data_bits);
-    (result, t_result, i) = result.store_uint_v2(t_result, left_value, left_data_bits, i);
-  }
+  ;; if(data_bits > 0) {
+  ;;   int left_value = slist.preload_uint_v2(data_bits);
+  ;;   (result, t_result, i) = result.store_uint_v2(t_result, left_value, data_bits, i);
+  ;; }
 
-  builder last = begin_cell();
-  if(result.builder_bits() > 0) {
-    builder last = result;
-  }
-  else {
-    builder last = t_result~list_next();
-    i -= 1;
-  }
+  ;; builder last = begin_cell();
+  ;; if(result.builder_bits() > 0) {
+  ;;   builder last = result;
+  ;; }
+  ;; else {
+  ;;   builder last = t_result~list_next();
+  ;;   i -= 1;
+  ;; }
 
-  repeat(i) {
-    last = t_result~list_next().store_ref_new(last.end_cell());
-  }
+  ;; repeat(i) {
+  ;;   last = t_result~list_next().store_ref_new(last.end_cell());
+  ;; }
 
-  return last.end_cell();
+  ;; return last.end_cell();
+
+  return linked_list;
 }
