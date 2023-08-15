@@ -46,10 +46,8 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
 
 int preload_uint_v2(slice data, int bits) {
   int data_bits = data.slice_bits();
-  ;; ~dump(data_bits);
 
   if(data_bits >= bits) {
-    ;; ~dump(data.preload_uint(bits));
     return data.preload_uint(bits);
   }
   else {
@@ -61,7 +59,6 @@ int preload_uint_v2(slice data, int bits) {
 }
 
 (builder, tuple, int) store_uint_v2(builder result, tuple t_result, int data, int data_bits, int i) {
-  ;; ~dump(5);
   int empty_bits = 1023 - result.builder_bits();
 
   if(empty_bits > data_bits) {
@@ -103,9 +100,6 @@ int preload_uint_v2(slice data, int bits) {
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  if(linked_list.begin_parse().slice_empty?()) {
-    return begin_cell().end_cell();
-  }
   int flag_bits = flag.uint_bits();
   int value_bits = value.uint_bits();
   slice slist = linked_list.begin_parse();
@@ -135,7 +129,6 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   builder last = result; 
-
   repeat(i) {
     last = t_result~list_next().store_ref_new(last.end_cell());
   }
