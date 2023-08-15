@@ -72,13 +72,13 @@ int preload_uint_v2(slice data, int bits) {
     return (begin_cell(), t_result.cons_new(result), i + 1);
   }
   else {
-    ;; result~store_uint(a, b);
+    slice s = begin_cell().store_uint(data, data_bits).end_cell().begin_parse();
+    int first_part = s~load_uint(empty_bits);
+    int second_part = s~load_uint(data_bits - empty_bits);
+    result~store_uint(first_part, empty_bits);
     t_result~cons_new(result);
     i += 1;
-    ;; result = begin_cell();
-    ;; (result, t_result, i) = result.store_uint_v2(t_result, data, data_bits, i);
-    ;; return (result, t_result, i);
-    return begin_cell().store_uint_v2(t_result, data, data_bits, i);
+    return begin_cell().store_uint_v2(t_result, second_part, data_bits - empty_bits, i);
   }
 }
 
