@@ -44,16 +44,29 @@ export class Task3 implements Contract {
                     .storeUint(0, 1)
                     .storeUint(1, 1)
                     .storeUint(0, 1)
-                    // .storeRef(beginCell()
-                    //     .storeRef(beginCell()
-                    //         .storeUint(1, 35)
-                    //         .endCell())
-                    //     .endCell())
+                    .storeUint(0, 1019)
+                    .storeRef(beginCell()
+                        .storeUint(1, 1)
+                        .storeUint(0, 1)
+                        .storeUint(1, 1)
+                        .storeUint(0, 1)
+                        //     .storeRef(beginCell()
+                        //         .storeUint(1, 35)
+                        //         .endCell())
+                        .endCell())
                     .endCell()
             },
         ]);
 
         let main_slice = result.stack.readCell().asSlice();
-        return [main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),];
+        let ref_slice = main_slice.loadRef().asSlice();
+        return [
+            main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
+            main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
+            ref_slice.loadBit(), ref_slice.loadBit(),
+            ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
+            ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
+            // main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
+        ];
     }
 }

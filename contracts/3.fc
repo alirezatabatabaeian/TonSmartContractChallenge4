@@ -75,9 +75,10 @@ int preload_uint_v2(slice data, int bits) {
     ;; result~store_uint(a, b);
     t_result~cons_new(result);
     i += 1;
-    result = begin_cell();
-    (result, t_result, i) = result.store_uint_v2(t_result, data, data_bits, i);
-    return (result, t_result, i);
+    ;; result = begin_cell();
+    ;; (result, t_result, i) = result.store_uint_v2(t_result, data, data_bits, i);
+    ;; return (result, t_result, i);
+    return begin_cell().store_uint_v2(t_result, data, data_bits, i);
   }
 }
 
