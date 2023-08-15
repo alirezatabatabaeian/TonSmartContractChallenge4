@@ -18,8 +18,8 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   slice stex = begin_cell().store_ref(text).end_cell().begin_parse();
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
-  int i = 0;
-  repeat(stex.slice_depth()) {
+  int i = stex.slice_depth();
+  repeat(i) {
     stex = stex.preload_ref().begin_parse();
     middle_result = begin_cell();
     repeat(stex.slice_bits() / 8) {
@@ -37,7 +37,6 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
       middle_result~store_uint(new_char, 8);
     }
     t_result~cons_new(middle_result);
-    i += 1;
   }
   
   builder last = t_result~list_next();
