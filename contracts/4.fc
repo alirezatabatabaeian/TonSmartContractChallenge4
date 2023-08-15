@@ -12,21 +12,6 @@
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
 forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 
-(builder, ()) change_char(builder middle_result, int char, int shift) inline {
-  int new_char = 0;
-  if((65 <= char) & (char <= 90)) {
-    new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
-  }
-  elseif((97 <= char) & (char <= 122)) {
-    new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
-  }
-  else {
-    new_char = char;
-  }
-  
-  return (middle_result.store_uint(new_char, 8), ());
-}
-
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   shift = shift % 26;
@@ -34,7 +19,18 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
   repeat(stex.slice_bits() / 8) {
-    middle_result~change_char(stex~load_uint(8), shift);
+    int char = stex~load_uint(8);
+    int new_char = 0;
+    if((65 <= char) & (char <= 90)) {
+      new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
+    }
+    elseif((97 <= char) & (char <= 122)) {
+      new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
+    }
+    else {
+      new_char = char;
+    }
+    middle_result~store_uint(new_char, 8);
   }
   t_result~cons_new(middle_result);
 
@@ -43,7 +39,18 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
     stex = stex.preload_ref().begin_parse();
     middle_result = begin_cell();
     repeat(stex.slice_bits() / 8) {
-      middle_result~change_char(stex~load_uint(8), shift);
+      int char = stex~load_uint(8);
+      int new_char = 0;
+      if((65 <= char) & (char <= 90)) {
+        new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
+      }
+      elseif((97 <= char) & (char <= 122)) {
+        new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
+      }
+      else {
+        new_char = char;
+      }
+      middle_result~store_uint(new_char, 8);
     }
     t_result~cons_new(middle_result);
     i += 1;
