@@ -145,7 +145,7 @@ int preload_uint_v2(slice data, int bits) {
 
   ;; ~dump(i);
   ;; builder last = begin_cell();
-  builder last = result;
+  builder last = result; 
   ;; if(result.builder_bits() >= 0) {
   ;;   ;; ~dump(11);
   ;;   last = result;
