@@ -104,9 +104,9 @@ int preload_uint_v2(slice data, int bits) {
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  if(linked_list.begin_parse().slice_empty?()) {
-    return begin_cell().end_cell();
-  }
+  ;; if(linked_list.begin_parse().slice_empty?()) {
+  ;;   return begin_cell().end_cell();
+  ;; }
   int flag_bits = flag.uint_bits();
   ;; ~dump(flag_bits);
   int value_bits = value.uint_bits();
@@ -145,7 +145,7 @@ int preload_uint_v2(slice data, int bits) {
 
   ;; ~dump(i);
   builder last = begin_cell();
-  if(result.builder_bits() > 0) {
+  if(result.builder_bits() >= 0) {
     ;; ~dump(11);
     last = result;
   }
