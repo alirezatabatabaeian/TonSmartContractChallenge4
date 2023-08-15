@@ -40,10 +40,10 @@ export class Task3 implements Contract {
             {
                 type: 'cell',
                 cell: beginCell()
-                    .storeUint(0, 1)
                     .storeUint(1, 1)
                     .storeUint(0, 1)
                     .storeUint(1, 1)
+                    .storeUint(0, 1)
                     // .storeRef(beginCell()
                     //     .storeRef(beginCell()
                     //         .storeUint(1, 35)

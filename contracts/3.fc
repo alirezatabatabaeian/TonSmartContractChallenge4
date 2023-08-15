@@ -46,8 +46,10 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
 
 int preload_uint_v2(slice data, int bits) {
   int data_bits = data.slice_bits();
+  ;; ~dump(data_bits);
 
   if(data_bits >= bits) {
+    ;; ~dump(data.preload_uint(bits));
     return data.preload_uint(bits);
   }
   else {
@@ -58,21 +60,8 @@ int preload_uint_v2(slice data, int bits) {
   }
 }
 
-(slice, ()) skip_bits_v2(slice data, int bits) {
-  int left_data_bits = data.slice_bits();
-
-  if(left_data_bits > bits) {
-    return (data.skip_bits(bits), ());
-  }
-  elseif(left_data_bits == bits) {
-    return (data.preload_ref().begin_parse(), ());
-  }
-  else {
-    return data.preload_ref().begin_parse().skip_bits_v2(bits - left_data_bits);
-  }
-}
-
 (builder, tuple, int) store_uint_v2(builder result, tuple t_result, int data, int data_bits, int i) {
+  ;; ~dump(5);
   int empty_bits = 1023 - result.builder_bits();
 
   if(empty_bits > data_bits) {
@@ -92,50 +81,82 @@ int preload_uint_v2(slice data, int bits) {
   }
 }
 
+(slice, ()) skip_bits_v2(slice data, int bits) {
+  ;; ~dump(55);
+  int left_data_bits = data.slice_bits();
+
+  if(left_data_bits > bits) {
+    return (data.skip_bits(bits), ());
+  }
+  elseif(left_data_bits == bits) {
+    if(data.slice_refs_empty?()) {
+      return (begin_cell().end_cell().begin_parse(), ());
+    }
+    else {
+      return (data.preload_ref().begin_parse(), ());
+    }
+  }
+  else {
+    return data.preload_ref().begin_parse().skip_bits_v2(bits - left_data_bits);
+  }
+}
+
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
-  ;; int flag_bits = flag.uint_bits();
-  ;; int value_bits = value.uint_bits();
-  ;; slice slist = linked_list.begin_parse();
-  ;; builder result = begin_cell();
-  ;; tuple t_result = empty_tuple();
-  ;; int i = 0;
+  int flag_bits = flag.uint_bits();
+  ;; ~dump(flag_bits);
+  int value_bits = value.uint_bits();
+  ;; ~dump(value_bits);
+  slice slist = linked_list.begin_parse();
+  builder result = begin_cell();
+  tuple t_result = empty_tuple();
+  int i = 0;
 
-  ;; (int data_bits, _, _, _) = slist.all_data_bits(1024);
-  ;; while(data_bits >= flag_bits) {
-  ;;   int load_value = slist.preload_uint_v2(flag_bits);
-  ;;   if(load_value == flag) {
-  ;;     (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
-  ;;     slist~skip_bits_v2(flag_bits);
-  ;;     data_bits -= flag_bits;
-  ;;   }
-  ;;   else {
-  ;;     int one_bit = slist.preload_uint_v2(1);
-  ;;     (result, t_result, i) = result.store_uint_v2(t_result, one_bit, 1, i);
-  ;;     slist~skip_bits_v2(1);
-  ;;     data_bits -= 1;
-  ;;   }
-  ;; }
+  (_, int data_bits, _, _) = slist.all_data_bits(1024);
+  while(data_bits >= flag_bits) {
+    ;; ~dump(data_bits);
+    int load_value = slist.preload_uint_v2(flag_bits);
+    ;; ~dump(load_value);
+    if(load_value == flag) {
+      ;; ~dump(1);
+      (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
+      slist~skip_bits_v2(flag_bits);
+      data_bits -= flag_bits;
+      ;; ~dump(1);
+    }
+    else {
+      ;; ~dump(11);
+      int one_bit = slist.preload_uint_v2(1);
+      (result, t_result, i) = result.store_uint_v2(t_result, one_bit, 1, i);
+      slist~skip_bits_v2(1);
+      data_bits -= 1;
+    }
+  }
 
-  ;; if(data_bits > 0) {
-  ;;   int left_value = slist.preload_uint_v2(data_bits);
-  ;;   (result, t_result, i) = result.store_uint_v2(t_result, left_value, data_bits, i);
-  ;; }
+  ;; ~dump(data_bits);
+  if(data_bits > 0) {
+    int left_value = slist.preload_uint_v2(data_bits);
+    (result, t_result, i) = result.store_uint_v2(t_result, left_value, data_bits, i);
+  }
 
-  ;; builder last = begin_cell();
-  ;; if(result.builder_bits() > 0) {
-  ;;   builder last = result;
-  ;; }
-  ;; else {
-  ;;   builder last = t_result~list_next();
-  ;;   i -= 1;
-  ;; }
+  ;; ~dump(i);
+  builder last = begin_cell();
+  if(result.builder_bits() > 0) {
+    ;; ~dump(11);
+    last = result;
+  }
+  else {
+    ;; ~dump(111);
+    last = t_result~list_next();
+    i -= 1;
+  }
 
-  ;; repeat(i) {
-  ;;   last = t_result~list_next().store_ref_new(last.end_cell());
-  ;; }
+  ;; ~dump(1111);
+  repeat(i) {
+    ;; ~dump(11111);
+    last = t_result~list_next().store_ref_new(last.end_cell());
+  }
 
-  ;; return last.end_cell();
-
-  return linked_list;
+  ;; ~dump(111111);
+  return last.end_cell();
 }
