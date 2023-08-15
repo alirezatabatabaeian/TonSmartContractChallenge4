@@ -14,8 +14,8 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
 
 (builder, ()) change_char(builder middle_result, int char, int shift) inline {
   int new_char = 0;
-  if((65 <= char) & (char <= 95)) {
-    new_char = ((65 <= (char + shift)) & ((char + shift) <= 95)) ? char + shift : char + shift - 26;
+  if((65 <= char) & (char <= 90)) {
+    new_char = ((65 <= (char + shift)) & ((char + shift) <= 90)) ? char + shift : char + shift - 26;
   }
   elseif((97 <= char) & (char <= 122)) {
     new_char = ((97 <= (char + shift)) & ((char + shift) <= 122)) ? char + shift : char + shift - 26;
