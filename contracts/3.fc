@@ -159,5 +159,5 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   ;; ~dump(111111);
-  return last.end_cell();
+  return linked_list;
 }
