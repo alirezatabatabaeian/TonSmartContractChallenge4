@@ -24,17 +24,17 @@ forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
 
-(int) pow2(int e) {
-  int n = 2;
-  if (e == 0) { return 1; }
-  if (e == 1) { return n; }
-  int p = pow2(e / 2);
-  p *= p;
-  if ((e % 2) == 1) {
-    p *= n;
-  }
-  return p;
-}
+;; (int) pow2(int e) {
+;;   int n = 2;
+;;   if (e == 0) { return 1; }
+;;   if (e == 1) { return n; }
+;;   int p = pow2(e / 2);
+;;   p *= p;
+;;   if ((e % 2) == 1) {
+;;     p *= n;
+;;   }
+;;   return p;
+;; }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
@@ -55,8 +55,12 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       load_value = slist.preload_uint(flag_bits);
     }
     else {
-      load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
-                    slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
+      load_value = begin_cell()
+      .store_uint(slist.preload_uint(data_bits), data_bits)
+      .store_uint(slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits), flag_bits - data_bits)
+      .end_cell().begin_parse().preload_uint(flag_bits);
+      ;; load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
+      ;;               slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
     }
 
     if(load_value == flag) {
@@ -113,8 +117,12 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       load_value = slist.preload_uint(full_data_bits); 
     }
     else {
-      load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
-                    slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
+      load_value = begin_cell()
+      .store_uint(slist.preload_uint(data_bits), data_bits)
+      .store_uint(slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits), full_data_bits - data_bits)
+      .end_cell().begin_parse().preload_uint(full_data_bits);
+      ;; load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
+      ;;               slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
     }
 
     empty_bits = 1023 - result.builder_bits();
