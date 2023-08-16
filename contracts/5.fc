@@ -21,23 +21,21 @@ int add(int a, int b) inline asm "ADD";
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
   tuple final_answer = empty_tuple();
-
-  if(k == 0) {
-    return final_answer;
-  }
-
   int before_before = -1;
   int before = 1;
 
-  repeat(n) {
+  int i = 0;
+  repeat(n + k) {
     (before_before, before) = (before, add(before, before_before));
+    if(i >= n) {
+      final_answer~tpush(before);
+    }
+    i += 1;
   }
-
-  repeat(k) {
-    (before_before, before) = (before, add(before, before_before));
-    final_answer~tpush(before);
-  }
-  
+  ;; repeat(k) {
+  ;;   (before_before, before) = (before, add(before, before_before));
+  ;;   final_answer~tpush(before);
+  ;; }
   return final_answer;
 }
 
