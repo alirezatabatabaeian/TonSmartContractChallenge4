@@ -79,7 +79,7 @@ int preload_uint_v2(slice data, int bits) {
   tuple t_result = empty_tuple();
   int i = 0;
 
-  (_, int data_bits, _, _) = slist.all_data_bits(254);
+  (_, int data_bits, _, _) = slist.all_data_bits(254); 
   while(data_bits >= flag_bits) {
     int load_value = slist.preload_uint_v2(flag_bits);
     if(load_value == flag) {
