@@ -51,13 +51,16 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
 
   while(full_data_bits >= flag_bits) {
     data_bits = slist.slice_bits();
-    if(data_bits >= flag_bits) {
-      load_value = slist.preload_uint(flag_bits);
-    }
-    else {
-      load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
-                    slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
-    }
+    ;; if(data_bits >= flag_bits) {
+    ;;   load_value = slist.preload_uint(flag_bits);
+    ;; }
+    ;; else {
+    ;;   load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
+    ;;                 slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
+    ;; }
+
+    load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
+                  slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
 
     if(load_value == flag) {
       empty_bits = 1023 - result.builder_bits();
