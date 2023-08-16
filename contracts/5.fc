@@ -44,7 +44,6 @@ int add(int a, int b) inline asm "ADD";
     before = 1;
   }
   elseif(n == 1) {
-    n = 1;
     before_before = 1;
     before = 0;
   }
@@ -197,10 +196,16 @@ int add(int a, int b) inline asm "ADD";
     before = 1244666864935793005828156005589143096022236302705537193166716344690085611761;
   }
 
-  n = n % 10 - 2;
-  if(n < 0) {
-    n += 10;
+  ifnot((n == 0) | (n == 1)) {
+    n = n % 10 - 2;
+    if(n < 0) {
+      n += 10;
+    }
   }
+  else {
+    n = n % 10 - 2;
+  }
+  
   repeat(n) {
     (before_before, before) = (before, add(before, before_before));
   }
