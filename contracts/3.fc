@@ -20,9 +20,8 @@
 
 int uint_bits(int x) asm "UBITSIZE";
 (int, int, int, int) all_data_bits(slice data, int n) asm "SDATASIZEQ";
-;; forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-;; forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-(int) tlen(tuple t) asm "TLEN";
+forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
+forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
 
 (int) pow2(int e) {
@@ -37,29 +36,16 @@ int uint_bits(int x) asm "UBITSIZE";
   return p;
 }
 
-int preload_uint_v2(slice data, int bits) {
-  int data_bits = data.slice_bits();
-  if(data_bits >= bits) {
-    return data.preload_uint(bits);
-  }
-  else {
-    return (data.preload_uint(data_bits) * pow2(bits - data_bits) +
-            data.preload_ref().begin_parse().preload_uint(bits - data_bits));
-  }
-}
-
 (builder, tuple, int) store_uint_v2(builder result, tuple t_result, int data, int data_bits, int i) {
   int empty_bits = 1023 - result.builder_bits();
   if(empty_bits > data_bits) {
     return (result.store_uint(data, data_bits), t_result, i);
   }
   elseif(empty_bits == data_bits) {
-    ;; return (begin_cell(), t_result.cons_new(result.store_uint(data, data_bits)), i + 1);
-    return (begin_cell(), t_result.tpush(result.store_uint(data, data_bits)), i + 1);
+    return (begin_cell(), t_result.cons_new(result.store_uint(data, data_bits)), i + 1);
   }
   else {
-    ;; return (begin_cell().store_uint(data, data_bits), t_result.cons_new(result), i + 1);
-    return (begin_cell().store_uint(data, data_bits), t_result.tpush(result), i + 1);
+    return (begin_cell().store_uint(data, data_bits), t_result.cons_new(result), i + 1);
   }
 }
 
@@ -81,35 +67,38 @@ int preload_uint_v2(slice data, int bits) {
   builder result = begin_cell();
   tuple t_result = empty_tuple();
   int i = 0;
+  int load_value = 0;
 
-  (_, int data_bits, _, _) = slist.all_data_bits(254); 
-  while(data_bits >= flag_bits) {
-    int load_value = slist.preload_uint_v2(flag_bits);
+  (_, int full_data_bits, _, _) = slist.all_data_bits(1024);
+  while(full_data_bits >= flag_bits) {
+    int data_bits = slist.slice_bits();
+    if(data_bits >= flag_bits) {
+      load_value = slist.preload_uint(flag_bits);
+    }
+    else {
+      load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
+                    slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
+    }
     if(load_value == flag) {
       (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
       slist~skip_bits_v2(flag_bits);
-      data_bits -= flag_bits;
+      full_data_bits -= flag_bits;
     }
     else {
-      int one_bit = slist.preload_uint_v2(1);
+      int one_bit = slist.preload_uint(1);
       (result, t_result, i) = result.store_uint_v2(t_result, one_bit, 1, i);
       slist~skip_bits_v2(1);
-      data_bits -= 1;
+      full_data_bits -= 1;
     }
   }
 
-  if(data_bits > 0) {
-    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(data_bits), data_bits, i);
+  if(full_data_bits > 0) {
+    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint(full_data_bits), full_data_bits, i);
   }
 
-  builder last = result;
-  ;; repeat(i) {
-  ;;   last = t_result~list_next().store_ref_new(last.end_cell());
-  ;; }
-
+  builder last = result; 
   repeat(i) {
-    last = t_result.at(i - 1).store_ref_new(last.end_cell());
-    i -= 1;
+    last = t_result~list_next().store_ref_new(last.end_cell());
   }
 
   return last.end_cell();
