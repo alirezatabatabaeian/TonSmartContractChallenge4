@@ -14,17 +14,20 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
+  slice text = begin_cell().store_ref(text).end_cell().begin_parse();
   shift = shift % 26;
-  slice stex = begin_cell().store_ref(text).end_cell().begin_parse();
+
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
-  int i = stex.slice_depth();
+
+  int i = text.slice_depth();
+  int new_char = 0;
+  int char = 0;
   repeat(i) {
-    stex = stex.preload_ref().begin_parse();
+    text = text.preload_ref().begin_parse();
     middle_result = begin_cell();
-    repeat(stex.slice_bits() / 8) {
-      int char = stex~load_uint(8);
-      int new_char = 0;
+    repeat(text.slice_bits() / 8) {
+      char = text~load_uint(8);
       if((65 <= char) & (char <= 90)) {
         new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
       }
