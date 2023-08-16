@@ -29,7 +29,7 @@
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
-  ;; if(tree.cell_hash() == hash) { return tree; }
+  if(tree.cell_hash() == hash) { return tree; }
   ;; slice stree = tree.begin_parse();
   ;; repeat(stree.slice_refs()) {
   ;;   cell ref1 = stree~load_ref();
