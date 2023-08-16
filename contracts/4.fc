@@ -14,9 +14,11 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
-  slice text = begin_cell().store_ref(text).end_cell().begin_parse();
   shift = shift % 26;
-
+  if(shift == 0) {
+    return text;
+  }
+  slice text = begin_cell().store_ref(text).end_cell().begin_parse();
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
   int i = text.slice_depth();
