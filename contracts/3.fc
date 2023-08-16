@@ -61,8 +61,7 @@ int preload_uint_v2(slice data, int bits) {
   else {
     t_result~cons_new(result);
     i += 1;
-    result = begin_cell();
-    (result, t_result, i) = result.store_uint_v2(t_result, data, data_bits, i);
+    result = begin_cell().store_uint(data, data_bits);
     return (result, t_result, i);
   }
 }
@@ -74,7 +73,7 @@ int preload_uint_v2(slice data, int bits) {
     if(data.slice_refs_empty?()) { return (begin_cell().end_cell().begin_parse(), ()); }
     else { return (data.preload_ref().begin_parse(), ()); }
   }
-  else { return data.preload_ref().begin_parse().skip_bits_v2(bits - left_data_bits); }
+  else { return (data.preload_ref().begin_parse().skip_bits(bits - left_data_bits), ()); }
 }
 
 ;; testable
