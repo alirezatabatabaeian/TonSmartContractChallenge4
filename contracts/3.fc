@@ -86,8 +86,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       full_data_bits -= flag_bits;
     }
     else {
-      ;; (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint(1), 1, i);
-      result~store_uint(slist.preload_uint(1), 1);
+      (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint(1), 1, i);
       slist~skip_bits_v2(1);
       full_data_bits -= 1;
     }
