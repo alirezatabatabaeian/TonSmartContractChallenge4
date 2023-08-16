@@ -19,27 +19,10 @@
 int add(int a, int b) inline asm "ADD";
 
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) method_id {
-  tuple final_answer = empty_tuple();
-  ;; int before_before = -1;
-  ;; int before = 1;
-  ;; repeat(n) {
-  ;;   (before_before, before) = (before, add(before, before_before));
-  ;; }
-  ;; repeat(k) {
-  ;;   (before_before, before) = (before, add(before, before_before));
-  ;;   final_answer~tpush(before);
-  ;; }
-  return final_answer;
-}
-
-;; testable
 ;; (tuple) fibonacci_sequence (int n, int k) method_id {
 ;;   tuple final_answer = empty_tuple();
 ;;   int before_before = -1;
 ;;   int before = 1;
-
-
 ;;   repeat(n) {
 ;;     (before_before, before) = (before, add(before, before_before));
 ;;   }
@@ -49,3 +32,20 @@ int add(int a, int b) inline asm "ADD";
 ;;   }
 ;;   return final_answer;
 ;; }
+
+;; testable
+(tuple) fibonacci_sequence (int n, int k) method_id {
+  tuple final_answer = empty_tuple();
+  int before_before = -1;
+  int before = 1;
+
+
+  repeat(n) {
+    (before_before, before) = (before, add(before, before_before));
+  }
+  repeat(k) {
+    (before_before, before) = (before, add(before, before_before));
+    final_answer~tpush(before);
+  }
+  return final_answer;
+}
