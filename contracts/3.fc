@@ -103,9 +103,15 @@ int preload_uint_v2(slice data, int bits) {
     }
   }
 
-  if(full_data_bits > 0) {
-    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(full_data_bits), full_data_bits, i);
+  int data_bits = slist.slice_bits();
+  if(data_bits >= full_data_bits) {
+    load_value = slist.preload_uint(full_data_bits);
   }
+  else {
+    load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
+                  slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
+  }
+  (result, t_result, i) = result.store_uint_v2(t_result, load_value, full_data_bits, i);
 
   builder last = result; 
   repeat(i) {
