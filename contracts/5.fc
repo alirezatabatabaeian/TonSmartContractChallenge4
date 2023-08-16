@@ -27,7 +27,7 @@ ADD
 }>
 1 PUSHINT
 2 PUSHINT
-ADD
+ADD 
 """;
 
 ;; testable
