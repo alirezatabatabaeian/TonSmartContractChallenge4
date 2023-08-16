@@ -36,6 +36,17 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
   return p;
 }
 
+int preload_uint_v2(slice data, int bits) {
+  int data_bits = data.slice_bits();
+  if(data_bits >= bits) {
+    return data.preload_uint(bits);
+  }
+  else {
+    return (data.preload_uint(data_bits) * pow2(bits - data_bits) +
+            data.preload_ref().begin_parse().preload_uint(bits - data_bits));
+  }
+}
+
 (builder, tuple, int) store_uint_v2(builder result, tuple t_result, int data, int data_bits, int i) {
   int empty_bits = 1023 - result.builder_bits();
   if(empty_bits > data_bits) {
@@ -93,7 +104,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
   }
 
   if(full_data_bits > 0) {
-    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint(full_data_bits), full_data_bits, i);
+    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(full_data_bits), full_data_bits, i);
   }
 
   builder last = result; 
