@@ -33,9 +33,12 @@
   slice stree = tree.begin_parse();
   repeat(stree.slice_refs()) {
     cell ref1 = stree~load_ref();
-    ;; cell maybe_answer = find_branch_by_hash(hash, ref1);
-    ;; ifnot(maybe_answer.begin_parse().slice_empty?()) { return maybe_answer; }
     if(ref1.cell_hash() == hash) { return ref1; }
+    slice sref1 = ref1.begin_parse();
+    repeat(sref1.slice_refs()) {
+      cell ref2 = sref1~load_ref();
+      if(ref2.cell_hash() == hash) { return ref2; }
+    }
   }
 
   return begin_cell().end_cell();
