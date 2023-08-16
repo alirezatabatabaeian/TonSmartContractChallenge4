@@ -44,7 +44,6 @@ export class Task3 implements Contract {
                     .storeUint(0, 1)
                     .storeUint(1, 1)
                     .storeUint(0, 1)
-                    .storeUint(0, 1019)
                     .storeRef(beginCell()
                         .storeUint(1, 1)
                         .storeUint(0, 1)
@@ -59,13 +58,13 @@ export class Task3 implements Contract {
         ]);
 
         let main_slice = result.stack.readCell().asSlice();
-        let ref_slice = main_slice.loadRef().asSlice();
+        // let ref_slice = main_slice.loadRef().asSlice();
         return [
             main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
             main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
-            ref_slice.loadBit(), ref_slice.loadBit(),
-            ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
-            ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
+            // ref_slice.loadBit(), ref_slice.loadBit(),
+            // ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
+            // ref_slice.loadBit(), ref_slice.loadBit(), ref_slice.loadBit(),
             // main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(), main_slice.loadBit(),
         ];
     }

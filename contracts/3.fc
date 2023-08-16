@@ -46,6 +46,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
   int i = 0;
   int load_value = 0;
   int data_bits = 0;
+  int empty_bits = 0;
   (_, int full_data_bits, _, _) = slist.all_data_bits(1024);
 
   while(full_data_bits >= flag_bits) {
@@ -59,8 +60,10 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
     }
 
     if(load_value == flag) {
-      int empty_bits = 1023 - result.builder_bits();
-      if(empty_bits > value_bits) { result~store_uint(value, value_bits); }
+      empty_bits = 1023 - result.builder_bits();
+      if(empty_bits > value_bits) { 
+        result~store_uint(value, value_bits);
+      }
       elseif(empty_bits == value_bits) {
         t_result~cons_new(result.store_uint(value, value_bits));
         result = begin_cell();
@@ -81,7 +84,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       full_data_bits -= flag_bits;
     }
     else {
-      int empty_bits = 1023 - result.builder_bits();
+      empty_bits = 1023 - result.builder_bits();
       if(empty_bits > 1) { result~store_uint(slist.preload_uint(1), 1); }
       elseif(empty_bits == 1) {
         t_result~cons_new(result.store_uint(slist.preload_uint(1), 1));
@@ -104,26 +107,28 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
     }
   }
 
-  data_bits = slist.slice_bits();
-  if(data_bits == full_data_bits) {
-    load_value = slist.preload_uint(full_data_bits); 
-  }
-  else {
-    load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
-                  slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
-  }
+  if(full_data_bits > 0) {
+    data_bits = slist.slice_bits();
+    if(data_bits == full_data_bits) {
+      load_value = slist.preload_uint(full_data_bits); 
+    }
+    else {
+      load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
+                    slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
+    }
 
-  int empty_bits = 1023 - result.builder_bits();
-  if(empty_bits > full_data_bits) { result~store_uint(load_value, full_data_bits); }
-  elseif(empty_bits == full_data_bits) {
-    t_result~cons_new(result.store_uint(load_value, full_data_bits));
-    result = begin_cell();
-    i += 1;
-  }
-  else {
-    t_result~cons_new(result);
-    result = begin_cell().store_uint(load_value, full_data_bits);
-    i += 1;
+    empty_bits = 1023 - result.builder_bits();
+    if(empty_bits > full_data_bits) { result~store_uint(load_value, full_data_bits); }
+    elseif(empty_bits == full_data_bits) {
+      t_result~cons_new(result.store_uint(load_value, full_data_bits));
+      result = begin_cell();
+      i += 1;
+    }
+    else {
+      t_result~cons_new(result);
+      result = begin_cell().store_uint(load_value, full_data_bits);
+      i += 1;
+    }
   }
 
   builder last = result; 

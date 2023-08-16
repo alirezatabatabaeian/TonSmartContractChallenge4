@@ -32,6 +32,6 @@ describe('Task3', () => {
     });
 
     it('should deploy', async () => {
-        // console.log(await task3.get_find_and_replace(2, 4))
+        console.log(await task3.get_find_and_replace(2, 4))
     });
 });
