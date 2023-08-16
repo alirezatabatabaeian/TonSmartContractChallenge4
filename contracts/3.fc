@@ -20,8 +20,9 @@
 
 int uint_bits(int x) asm "UBITSIZE";
 (int, int, int, int) all_data_bits(slice data, int n) asm "SDATASIZEQ";
-forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
+;; forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
+;; forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
+(int) tlen(tuple t) asm "TLEN";
 (builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
 
 (int) pow2(int e) {
@@ -53,10 +54,12 @@ int preload_uint_v2(slice data, int bits) {
     return (result.store_uint(data, data_bits), t_result, i);
   }
   elseif(empty_bits == data_bits) {
-    return (begin_cell(), t_result.cons_new(result.store_uint(data, data_bits)), i + 1);
+    ;; return (begin_cell(), t_result.cons_new(result.store_uint(data, data_bits)), i + 1);
+    return (begin_cell(), t_result.tpush(result.store_uint(data, data_bits)), i + 1);
   }
   else {
-    return (begin_cell().store_uint(data, data_bits), t_result.cons_new(result), i + 1);
+    ;; return (begin_cell().store_uint(data, data_bits), t_result.cons_new(result), i + 1);
+    return (begin_cell().store_uint(data, data_bits), t_result.tpush(result), i + 1);
   }
 }
 
@@ -99,9 +102,14 @@ int preload_uint_v2(slice data, int bits) {
     (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(data_bits), data_bits, i);
   }
 
-  builder last = result; 
+  builder last = result;
+  ;; repeat(i) {
+  ;;   last = t_result~list_next().store_ref_new(last.end_cell());
+  ;; }
+
   repeat(i) {
-    last = t_result~list_next().store_ref_new(last.end_cell());
+    last = t_result.at(i - 1).store_ref_new(last.end_cell());
+    i -= 1;
   }
 
   return last.end_cell();
