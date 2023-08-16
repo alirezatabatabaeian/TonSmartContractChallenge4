@@ -35,4 +35,11 @@ export class Task5 implements Contract {
         return result.stack.readTuple();
     }
 
+    async get_test(provider: ContractProvider, a: number, b: number) {
+        const result = await provider.get('get_test', [
+            { type: 'int', value: BigInt(a) },
+            { type: 'int', value: BigInt(b) },]);
+
+        return result.stack.readNumber();
+    }
 }

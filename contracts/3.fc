@@ -42,10 +42,11 @@ int preload_uint_v2(slice data, int bits) {
     return data.preload_uint(bits);
   }
   else {
-    int first_part = data.preload_uint(data_bits);
-    slice ref = data.preload_ref().begin_parse();
-    int second_part = ref.preload_uint_v2(bits - data_bits);
-    return (first_part * pow2(bits - data_bits) + second_part);
+    ;; int first_part = data.preload_uint(data_bits);
+    ;; slice ref = data.preload_ref().begin_parse();
+    ;; int second_part = ref.preload_uint_v2(bits - data_bits);
+    ;; return (first_part * pow2(bits - data_bits) + second_part);
+    return 0;
   }
 }
 
@@ -59,13 +60,6 @@ int preload_uint_v2(slice data, int bits) {
     return (begin_cell(), t_result.cons_new(result), i + 1);
   }
   else {
-    ;; slice s = begin_cell().store_uint(data, data_bits).end_cell().begin_parse();
-    ;; int first_part = s~load_uint(empty_bits);
-    ;; int second_part = s~load_uint(data_bits - empty_bits);
-    ;; result~store_uint(first_part, empty_bits);
-    ;; t_result~cons_new(result);
-    ;; i += 1;
-    ;; return begin_cell().store_uint_v2(t_result, second_part, data_bits - empty_bits, i);
     t_result~cons_new(result);
     i += 1;
     result = begin_cell();
@@ -96,7 +90,6 @@ int preload_uint_v2(slice data, int bits) {
   (_, int data_bits, _, _) = slist.all_data_bits(1024);
   while(data_bits >= flag_bits) {
     int load_value = slist.preload_uint_v2(flag_bits);
-    
     if(load_value == flag) {
       (result, t_result, i) = result.store_uint_v2(t_result, value, value_bits, i);
       slist~skip_bits_v2(flag_bits);
