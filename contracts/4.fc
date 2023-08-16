@@ -18,9 +18,6 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   if(shift == 0) {
     return text;
   }
-  if(text.begin_parse().slice_empty?()) {
-    return text;
-  }
   slice text = begin_cell().store_ref(text).end_cell().begin_parse();
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
