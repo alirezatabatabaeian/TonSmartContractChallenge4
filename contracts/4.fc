@@ -19,24 +19,19 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
 
   tuple t_result = empty_tuple();
   builder middle_result = begin_cell();
-
   int i = text.slice_depth();
   int new_char = 0;
   int char = 0;
-  int maybe_new_char1 = 0;
-  int maybe_new_char2 = 0;
   repeat(i) {
     text = text.preload_ref().begin_parse();
     middle_result = begin_cell();
     repeat(text.slice_bits() / 8) {
       char = text~load_uint(8);
-      maybe_new_char1 = char + shift;
-      maybe_new_char2 = char + shift - 26;
       if((65 <= char) & (char <= 90)) {
-        new_char = ((65 <= maybe_new_char1) & (maybe_new_char1 <= 90)) ? maybe_new_char1 : maybe_new_char2;
+        new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
       }
       elseif((97 <= char) & (char <= 122)) {
-        new_char = ((97 <= maybe_new_char1) & (maybe_new_char1 <= 122)) ? maybe_new_char1 : maybe_new_char2;
+        new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
       }
       else {
         new_char = char;
