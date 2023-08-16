@@ -78,24 +78,9 @@
                         repeat(stree.slice_refs()) {
                           cell tree = stree~load_ref();
                           if(tree.cell_hash() == hash) { return tree; }
-                          slice stree = tree.begin_parse();
-                          repeat(stree.slice_refs()) {
-                            cell tree = stree~load_ref();
-                            if(tree.cell_hash() == hash) { return tree; }
-                            slice stree = tree.begin_parse();
-                            repeat(stree.slice_refs()) {
-                              cell tree = stree~load_ref();
-                              if(tree.cell_hash() == hash) { return tree; }
-                              slice stree = tree.begin_parse();
-                              repeat(stree.slice_refs()) {
-                                cell tree = stree~load_ref();
-                                if(tree.cell_hash() == hash) { return tree; }
-                                cell maybe_answer = find_branch_by_hash(hash, tree);
-                                ifnot(maybe_answer.begin_parse().slice_empty?()) {
-                                  return maybe_answer;
-                                }
-                              }
-                            }
+                          cell maybe_answer = find_branch_by_hash(hash, tree);
+                          ifnot(maybe_answer.begin_parse().slice_empty?()) {
+                            return maybe_answer;
                           }
                         }
                       }
