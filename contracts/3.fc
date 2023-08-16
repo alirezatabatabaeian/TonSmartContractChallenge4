@@ -96,7 +96,8 @@ int preload_uint_v2(slice data, int bits) {
   }
 
   if(data_bits > 0) {
-    (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(data_bits), data_bits, i);
+    ;; (result, t_result, i) = result.store_uint_v2(t_result, slist.preload_uint_v2(data_bits), data_bits, i);
+    result~store_uint(slist.preload_uint(data_bits), data_bits);
   }
 
   builder last = result; 
