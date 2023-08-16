@@ -36,9 +36,121 @@ int add(int a, int b) inline asm "ADD";
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
   tuple final_answer = empty_tuple();
-  int before_before = -1;
-  int before = 1;
+  int before_before = 0;
+  int before = 0;
 
+  if(n < 12) {
+    int before_before = -1;
+    int before = 1;
+  }
+  elseif(n < 22) {
+
+  }
+  elseif(n < 32) {
+    
+  }
+  elseif(n < 42) {
+    
+  }
+  elseif(n < 52) {
+    
+  }
+  elseif(n < 62) {
+    
+  }
+  elseif(n < 72) {
+    
+  }
+  elseif(n < 82) {
+    
+  }
+  elseif(n < 92) {
+    
+  }
+  elseif(n < 102) {
+    
+  }
+  elseif(n < 112) {
+    
+  }
+  elseif(n < 122) {
+    
+  }
+  elseif(n < 132) {
+    
+  }
+  elseif(n < 142) {
+    
+  }
+  elseif(n < 152) {
+    
+  }
+  elseif(n < 162) {
+    
+  }
+  elseif(n < 172) {
+    
+  }
+  elseif(n < 182) {
+    
+  }
+  elseif(n < 192) {
+    
+  }
+  elseif(n < 202) {
+    
+  }
+  elseif(n < 212) {
+    
+  }
+  elseif(n < 222) {
+    
+  }
+  elseif(n < 232) {
+    
+  }
+  elseif(n < 242) {
+    
+  }
+  elseif(n < 252) {
+    
+  }
+  elseif(n < 262) {
+    
+  }
+  elseif(n < 272) {
+    
+  }
+  elseif(n < 282) {
+    
+  }
+  elseif(n < 292) {
+    
+  }
+  elseif(n < 302) {
+    
+  }
+  elseif(n < 312) {
+    
+  }
+  elseif(n < 322) {
+    
+  }
+  elseif(n < 332) {
+    
+  }
+  elseif(n < 342) {
+    
+  }
+  elseif(n < 352) {
+    
+  }
+  elseif(n < 362) {
+    
+  }
+  elseif(n < 372) { ;; chane to if
+    
+  }
 
   repeat(n) {
     (before_before, before) = (before, add(before, before_before));
