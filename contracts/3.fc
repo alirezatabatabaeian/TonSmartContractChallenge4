@@ -19,22 +19,6 @@
 }
 
 int uint_bits(int x) asm "UBITSIZE";
-(int, int, int, int) all_data_bits(slice data, int n) asm "SDATASIZEQ";
-forall X -> tuple cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CONS";
-(builder) store_ref_new(builder b, cell c) inline asm(c b) "STREF";
-
-;; (int) pow2(int e) {
-;;   int n = 2;
-;;   if (e == 0) { return 1; }
-;;   if (e == 1) { return n; }
-;;   int p = pow2(e / 2);
-;;   p *= p;
-;;   if ((e % 2) == 1) {
-;;     p *= n;
-;;   }
-;;   return p;
-;; }
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id {
@@ -47,7 +31,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
   int load_value = 0;
   int data_bits = 0;
   int empty_bits = 0;
-  (_, int full_data_bits, _, _) = slist.all_data_bits(1024);
+  (_, int full_data_bits, _) = slist.slice_compute_data_size(1024);
 
   while(full_data_bits >= flag_bits) {
     data_bits = slist.slice_bits();
@@ -59,8 +43,6 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       .store_uint(slist.preload_uint(data_bits), data_bits)
       .store_uint(slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits), flag_bits - data_bits)
       .end_cell().begin_parse().preload_uint(flag_bits);
-      ;; load_value = (slist.preload_uint(data_bits) * pow2(flag_bits - data_bits) +
-      ;;               slist.preload_ref().begin_parse().preload_uint(flag_bits - data_bits));
     }
 
     if(load_value == flag) {
@@ -69,12 +51,12 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
         result~store_uint(value, value_bits);
       }
       elseif(empty_bits == value_bits) {
-        t_result~cons_new(result.store_uint(value, value_bits));
+        t_result = cons(result.store_uint(value, value_bits), t_result);
         result = begin_cell();
         i += 1;
       }
       else {
-        t_result~cons_new(result);
+        t_result = cons(result, t_result);
         result = begin_cell().store_uint(value, value_bits);
         i += 1;
       }
@@ -91,12 +73,14 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       empty_bits = 1023 - result.builder_bits();
       if(empty_bits > 1) { result~store_uint(slist.preload_uint(1), 1); }
       elseif(empty_bits == 1) {
-        t_result~cons_new(result.store_uint(slist.preload_uint(1), 1));
+        t_result = cons(result.store_uint(slist.preload_uint(1), 1), t_result);
+        ;; t_result~cons_new(result.store_uint(slist.preload_uint(1), 1));
         result = begin_cell();
         i += 1;
       }
       else {
-        t_result~cons_new(result);
+        t_result = cons(result, t_result);
+        ;; t_result~cons_new(result);
         result = begin_cell().store_uint(slist.preload_uint(1), 1);
         i += 1;
       }
@@ -121,19 +105,19 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
       .store_uint(slist.preload_uint(data_bits), data_bits)
       .store_uint(slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits), full_data_bits - data_bits)
       .end_cell().begin_parse().preload_uint(full_data_bits);
-      ;; load_value = (slist.preload_uint(data_bits) * pow2(full_data_bits - data_bits) +
-      ;;               slist.preload_ref().begin_parse().preload_uint(full_data_bits - data_bits));
     }
 
     empty_bits = 1023 - result.builder_bits();
     if(empty_bits > full_data_bits) { result~store_uint(load_value, full_data_bits); }
     elseif(empty_bits == full_data_bits) {
-      t_result~cons_new(result.store_uint(load_value, full_data_bits));
+      t_result = cons(result.store_uint(load_value, full_data_bits), t_result);
+      ;; t_result~cons_new(result.store_uint(load_value, full_data_bits));
       result = begin_cell();
       i += 1;
     }
     else {
-      t_result~cons_new(result);
+      t_result = cons(result, t_result);
+      ;; t_result~cons_new(result);
       result = begin_cell().store_uint(load_value, full_data_bits);
       i += 1;
     }
@@ -141,7 +125,7 @@ forall X -> (tuple, ()) ~cons_new(tuple tail, X head) inline asm(head tail) "CON
 
   builder last = result; 
   repeat(i) {
-    last = t_result~list_next().store_ref_new(last.end_cell());
+    last = t_result~list_next().store_ref(last.end_cell());
   }
 
   return last.end_cell();
