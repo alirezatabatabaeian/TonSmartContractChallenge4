@@ -74,13 +74,11 @@ int uint_bits(int x) asm "UBITSIZE";
       if(empty_bits > 1) { result~store_uint(slist.preload_uint(1), 1); }
       elseif(empty_bits == 1) {
         t_result = cons(result.store_uint(slist.preload_uint(1), 1), t_result);
-        ;; t_result~cons_new(result.store_uint(slist.preload_uint(1), 1));
         result = begin_cell();
         i += 1;
       }
       else {
         t_result = cons(result, t_result);
-        ;; t_result~cons_new(result);
         result = begin_cell().store_uint(slist.preload_uint(1), 1);
         i += 1;
       }
@@ -111,13 +109,11 @@ int uint_bits(int x) asm "UBITSIZE";
     if(empty_bits > full_data_bits) { result~store_uint(load_value, full_data_bits); }
     elseif(empty_bits == full_data_bits) {
       t_result = cons(result.store_uint(load_value, full_data_bits), t_result);
-      ;; t_result~cons_new(result.store_uint(load_value, full_data_bits));
       result = begin_cell();
       i += 1;
     }
     else {
       t_result = cons(result, t_result);
-      ;; t_result~cons_new(result);
       result = begin_cell().store_uint(load_value, full_data_bits);
       i += 1;
     }

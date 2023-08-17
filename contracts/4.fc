@@ -24,10 +24,10 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   int i = text.slice_depth();
   int new_char = 0;
   int char = 0;
-  repeat(i) {
+  repeat(i - 1) {
     text = text.preload_ref().begin_parse();
     middle_result = begin_cell();
-    repeat(text.slice_bits() / 8) {
+    repeat(127) {
       char = text~load_uint(8);
       if((65 <= char) & (char <= 90)) {
         new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
@@ -42,8 +42,26 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
     }
     t_result~cons_new(middle_result);
   }
+
+  text = text.preload_ref().begin_parse();
+  middle_result = begin_cell();
+  repeat(text.slice_bits() / 8) {
+    char = text~load_uint(8);
+    if((65 <= char) & (char <= 90)) {
+      new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
+    }
+    elseif((97 <= char) & (char <= 122)) {
+      new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
+    }
+    else {
+      new_char = char;
+    }
+    middle_result~store_uint(new_char, 8);
+  }
+  ;; t_result~cons_new(middle_result);
   
-  builder last = t_result~list_next();
+  ;; builder last = t_result~list_next();
+  builder last = middle_result; 
   repeat(i - 1) {
     last = t_result~list_next().store_ref_new(last.end_cell());
   }
