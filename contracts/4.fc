@@ -27,27 +27,19 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
   repeat(i - 1) {
     text = text.preload_ref().begin_parse();
     middle_result = begin_cell();
-    int t = 1;
-    int m = 0;
     repeat(127) {
       char = text~load_uint(8);
+      int chpsh = char + shift;
       if((65 <= char) & (char <= 90)) {
-        new_char = ((65 <= char + shift) & (char + shift <= 90)) ? char + shift : char + shift - 26;
+        new_char = ((65 <= chpsh) & (chpsh <= 90)) ? chpsh : chpsh - 26;
       }
       elseif((97 <= char) & (char <= 122)) {
-        new_char = ((97 <= char + shift) & (char + shift <= 122)) ? char + shift : char + shift - 26;
+        new_char = ((97 <= chpsh) & (chpsh <= 122)) ? chpsh : chpsh - 26;
       }
       else {
         new_char = char;
       }
-      m = m * 256 + new_char;
-      if(t % 32 == 0){
-        middle_result~store_uint(m, 32 * 8);
-      }
-      elseif(t == 127) {
-        middle_result~store_uint(m, 31 * 8);
-      }
-      t += 1;
+      middle_result~store_uint(new_char, 8);
     }
     t_result~cons_new(middle_result);
   }
@@ -67,7 +59,7 @@ forall X -> (tuple, ()) cons_new(tuple tail, X head) inline asm(head tail) "CONS
     }
     middle_result~store_uint(new_char, 8);
   }
-
+  
   builder last = middle_result; 
   repeat(i - 1) {
     last = t_result~list_next().store_ref_new(last.end_cell());
