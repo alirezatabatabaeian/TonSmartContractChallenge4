@@ -1,4 +1,4 @@
-{-
+{- 
   TASK 5 - Fibonacci sequence 
   Implement a function that generates the Fibonacci
   sequence from N to N+K terms (0<=N<=370; 0<=N+K<=371; 0<=K<=255).
